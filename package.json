@@ -1,0 +1,15 @@
+{
+  "name": "daihonroid",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc panel/src/index.ts",
+    "watch": "tsc --watch panel/src/index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^2.9.2"
+  }
+}
