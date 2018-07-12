@@ -957,6 +957,10 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
+coffee-script@*:
+  version "1.12.7"
+  resolved "https://registry.yarnpkg.com/coffee-script/-/coffee-script-1.12.7.tgz#c05dae0cb79591d05b3070a8433a98c9a89ccc53"
+
 collection-visit@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/collection-visit/-/collection-visit-1.0.0.tgz#4bc0373c164bc3291b4d368c829cf1a80a59dca0"
@@ -1602,6 +1606,10 @@ esutils@^2.0.2:
 etag@~1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
+
+eventemitter3@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.1.0.tgz#090b4d6cdbd645ed10bf750d4b5407942d7ba163"
 
 events@^1.0.0:
   version "1.1.1"
@@ -2499,6 +2507,12 @@ nice-try@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.4.tgz#d93962f6c52f2c1558c0fbda6d512819f1efe1c4"
 
+no@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/no/-/no-0.0.1.tgz#1fbec6cd91eacc2defe5917dffea90edc8eb5df6"
+  dependencies:
+    coffee-script "*"
+
 node-forge@^0.7.1:
   version "0.7.5"
   resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-0.7.5.tgz#6c152c345ce11c52f465c2abd957e8639cd674df"
@@ -2551,6 +2565,10 @@ node-releases@^1.0.0-alpha.10:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.0.0-alpha.10.tgz#61c8d5f9b5b2e05d84eba941d05b6f5202f68a2a"
   dependencies:
     semver "^5.3.0"
+
+noice-json-rpc@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/noice-json-rpc/-/noice-json-rpc-1.2.0.tgz#bbbb789fd6ebe1aa12969211d6910bf8d0e6646b"
 
 nopt@^4.0.1:
   version "4.0.1"

@@ -24,6 +24,8 @@ export default Vue.extend({
             const r = await Extension.getAllSequences()
             console.log(r)
             console.log(JSON.parse(r))
+
+            console.log(await Extension.api.version())
         }
     }
 })

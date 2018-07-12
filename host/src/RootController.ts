@@ -13,6 +13,8 @@ export default class RootController {
     }
 
     createBin(name: string) {
-        
+        const project = (app as App).project
+        project.rootItem.createBin(name)
     }
 }
+

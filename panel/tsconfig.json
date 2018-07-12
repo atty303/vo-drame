@@ -3,7 +3,8 @@
         //"allowJs": true,            // Allows JavaScript files to be compiled.
         "lib": [                    // Default should be fine but may need fine-tuning. This works for our use case.
             "dom",
-            "es2015"
+            "es2015",
+            "es2015.proxy"
         ],
         "strict": true,             // Shorthand for the following four options:
         // "noImplicitAny": true,
@@ -16,5 +17,8 @@
         "esModuleInterop": true,
         "sourceMap": true,
         "baseUrl": "src"
-    }
+    },
+    //"include": [
+        //"../shared/**/*.ts"
+    //]
 }
