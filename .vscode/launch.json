@@ -8,13 +8,14 @@
         {
             "type": "chrome",
             "request": "attach",
-            "name": "localhost に対して Chrome を起動",
-            //"url": "http://localhost:7777",
+            "name": "Attach to extension panel",
+            // match to specified in .debug
             "port": 8000,
-            "webRoot": "${workspaceFolder}/panel/src/index.html",
+            "webRoot": "${workspaceFolder}/panel/dist",
             "sourceMapPathOverrides": {
-                "webpack:///*": "${workspaceFolder}/*"
-            }
+                "/*": "${workspaceFolder}/panel/dist/*"
+            },
+            "trace": true
         }
     ]
 }

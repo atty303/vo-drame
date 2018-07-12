@@ -10,6 +10,10 @@
         // "noImplicitThis": true,
         // "alwaysStrict": true,
         // "strictNullChecks": true,
-        "target": "es5"             // Chrome 41 supports much of ECMAScript 5. However, this may need to be changed to ES3 to be safe.
+        "target": "es2015",
+        "module": "es2015",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "sourceMap": true
     }
 }

@@ -1,0 +1,8 @@
+{
+    "speed":1.0,
+    "volume":1.0,
+    "pitch":1.0,
+    "intonation":1.0,
+    "emotions":[ {"Key":"喜び", "Value":1.00}, {"Key":"悲しみ", "Value":0.20} ],
+    "talktext":"おはようございますー！"
+    }

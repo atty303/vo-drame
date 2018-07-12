@@ -22,8 +22,8 @@
 		<Extension Id="io.github.atty303.daihonroid.core">
 			<DispatchInfo>
 				<Resources>
-					<MainPath>./panel/src/index.html</MainPath>
-					<ScriptPath>./host/src/app.jsx</ScriptPath>
+					<MainPath>./panel/dist/index.html</MainPath>
+					<ScriptPath>./host/dist/main.js</ScriptPath>
 					<CEFCommandLine>
 						<Parameter>--allow-file-access</Parameter>
 						<Parameter>--allow-file-access-from-files</Parameter>

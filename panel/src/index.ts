@@ -1,8 +1,23 @@
 import * as Immutable from 'immutable';
+import * as csi from 'csinterface-ts';
 
 class Startup {
     public static main(): number {
-        console.log("hello");
+        //console.log("hello2");
+        //console.log(window.location.href);
+
+        (window.document.querySelector("#reload") as any).addEventListener('click', function() {
+            //console.log('reload2');
+            //console.log("hoge");
+            const c = new csi.CSInterface();
+            const extBundlePath = c.getSystemPath(csi.SystemPath.EXTENSION) + '/host/dist/main.js';
+            c.evalScript(`$.evalFile("${extBundlePath}");`, (e: any) => {
+                console.log(e);
+                c.evalScript("_daihon.showBuildName();", () => {});
+            });
+            //window.location.reload();
+        });
+        
         return 0;
     }
 }

@@ -1,22 +1,22 @@
 {
-  "name": "daihonroid",
+  "name": "panel",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
-  "scripts": {
-    "build": "tsc panel/src/index.ts",
-    "watch": "tsc --watch panel/src/index.ts",
-    "bbuild": "parcel --hmr-hostname=localhost panel/src/index.ts"
-  },
-  "author": "atty303 <atty303@gmail.com>",
   "license": "MIT",
-  "devDependencies": {
-    "@types/node": "^10.5.2",
-    "parcel-bundler": "^1.9.4",
-    "typescript": "^2.9.2"
-  },
   "private": true,
   "dependencies": {
-    "immutable": "^3.8.2"
+    "csinterface-ts": "^1.0.3",
+    "immutable": "^3.8.2",
+    "vue": "^2.5.16"
+  },
+  "devDependencies": {
+    "@types/node": "^10.5.2",
+    "parcel-bundler": "^1.9.6",
+    "types-for-adobe": "github:pravdomil/types-for-adobe",
+    "typescript": "^2.9.2"
+  },
+  "scripts": {
+    "watch": "parcel watch --out-dir panel/dist --no-hmr panel/src/index.ts",
+    "watch-host": "parcel watch --out-dir host/dist --no-hmr host/src/main.ts"
   }
 }
