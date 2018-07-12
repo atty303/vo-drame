@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "allowJs": true,            // Allows JavaScript files to be compiled.
+        //"allowJs": true,            // Allows JavaScript files to be compiled.
         "lib": [                    // Default should be fine but may need fine-tuning. This works for our use case.
             "dom",
             "es2015"
@@ -10,7 +10,7 @@
         // "noImplicitThis": true,
         // "alwaysStrict": true,
         // "strictNullChecks": true,
-        "target": "es2015",
+        "target": "es5",
         "module": "es2015",
         "moduleResolution": "node",
         "esModuleInterop": true,

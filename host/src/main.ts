@@ -1,12 +1,7 @@
 /// <reference types="types-for-adobe/Premiere/2018" />
 
-declare class Application extends App {}
+import "extendscript-es5-shim-ts"
 
-class Main {
-    showBuildName() {
-        alert(`${app.build} build`);
-    }
-}
+import RootController from './RootController'
 
-$.global._daihon = new Main();
-//_daihon.showBuildName();
+$.global._daihon = new RootController();

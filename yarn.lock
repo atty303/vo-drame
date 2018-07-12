@@ -1639,6 +1639,10 @@ extend-shallow@^3.0.0, extend-shallow@^3.0.2:
     assign-symbols "^1.0.0"
     is-extendable "^1.0.1"
 
+extendscript-es5-shim-ts@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/extendscript-es5-shim-ts/-/extendscript-es5-shim-ts-0.0.1.tgz#dfe8c51fa93f4eb4e7681ac6c2dc75f455d6d163"
+
 extglob@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/extglob/-/extglob-2.0.4.tgz#ad00fe4dc612a9232e8718711dc5cb5ab0285543"

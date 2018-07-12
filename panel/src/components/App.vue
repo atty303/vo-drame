@@ -2,6 +2,7 @@
     <div>
         {{name}} !!!
         <button @click="reload">reload</button>
+        <button @click="test1">test1</button>
     </div>
 </template>
 
@@ -17,6 +18,12 @@ export default Vue.extend({
     methods: {
         reload() {
             Extension.reload()
+        },
+
+        async test1() {
+            const r = await Extension.getAllSequences()
+            console.log(r)
+            console.log(JSON.parse(r))
         }
     }
 })
