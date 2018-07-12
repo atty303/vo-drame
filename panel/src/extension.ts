@@ -1,19 +1,19 @@
 import * as csi from 'csinterface-ts'
-import * as rpc from 'noice-json-rpc'
+import * as jsonRpc from 'noice-json-rpc'
 
 import { Protocol } from '../../shared/Protocol'
 
-class EvalSocketLike implements rpc.LikeSocket {
-    csiInterface: csi.CSInterface
+class EvalSocketLike implements jsonRpc.LikeSocket {
+    csInterface: csi.CSInterface
     messageCallback?: Function
 
     constructor(csiInterface: csi.CSInterface) {
-        this.csiInterface = csiInterface;
+        this.csInterface = csiInterface;
     }
     
     send(message: string): void {
         const expr = `_daihon_rpc_server(${JSON.stringify(message)})`
-        this.csiInterface.evalScript(expr, (result) => {
+        this.csInterface.evalScript(expr, (result) => {
             console.log(result)
             if (this.messageCallback) this.messageCallback.call(null, result)
         })
@@ -36,34 +36,32 @@ class EvalSocketLike implements rpc.LikeSocket {
 }
 
 class Extension {
-    private c = new csi.CSInterface()
-    private bridgeObjectName = '_daihon'
     api: Protocol.Api
 
+    private csInterface = new csi.CSInterface()
+
     constructor() {
-        const socketLike = new EvalSocketLike(this.c)
-        const a = new rpc.Client(socketLike, { logEmit: true, logConsole: true})
-        this.api = a.api('')
-    }
-    
-    async reload(): Promise<void> {
-        const extBundle = this.c.getSystemPath(csi.SystemPath.EXTENSION) + '/host/dist/main.js'
-        await this.evalScript(`$.evalFile("${extBundle}")`)
-        window.location.reload()
+        const socketLike = new EvalSocketLike(this.csInterface)
+        const client = new jsonRpc.Client(socketLike, { logEmit: true, logConsole: true})
+        this.api = client.api()
     }
 
-    getAllSequences(): Promise<any> {
-        return this.callBridge("getSequences()")
+    onLoaded() {
+        const extBundle = this.csInterface.getSystemPath(csi.SystemPath.EXTENSION) + '/host/dist/main.js'
+        this.evalScript(`$.evalFile("${extBundle}")`)
+    }
+
+    onBeforeUnload() {
+    }
+    
+    reload(): void {
+        window.location.reload()
     }
 
     private async evalScript(body: string): Promise<any> {
         return new Promise((resolve) => {
-            this.c.evalScript(body, (res) => resolve(res))
+            this.csInterface.evalScript(body, (res) => resolve(res))
         })
-    }
-
-    private async callBridge(body: string): Promise<any> {
-        return this.evalScript(`${this.bridgeObjectName}.${body}`)
     }
 }
 

@@ -12,6 +12,7 @@
     "immutable": "^3.8.2",
     "no": "^0.0.1",
     "noice-json-rpc": "^1.2.0",
+    "tsmonad": "^0.8.0",
     "vue": "^2.5.16"
   },
   "devDependencies": {
