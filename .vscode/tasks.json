@@ -39,6 +39,14 @@
             "problemMatcher": [
                 "$tsc"
             ]
+        },
+        {
+            "type": "npm",
+            "script": "watch-panel",
+            "problemMatcher": [
+                "$tsc-watch"
+            ],
+            "isBackground": true
         }
     ]
 }
