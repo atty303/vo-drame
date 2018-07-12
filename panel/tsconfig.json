@@ -3,8 +3,7 @@
         "allowJs": true,            // Allows JavaScript files to be compiled.
         "lib": [                    // Default should be fine but may need fine-tuning. This works for our use case.
             "dom",
-            "es5",
-            "es2015.promise"
+            "es2015"
         ],
         "strict": true,             // Shorthand for the following four options:
         // "noImplicitAny": true,

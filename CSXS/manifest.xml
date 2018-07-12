@@ -28,6 +28,7 @@
 						<Parameter>--allow-file-access</Parameter>
 						<Parameter>--allow-file-access-from-files</Parameter>
 						<Parameter>--enable-nodejs</Parameter>
+						<Parameter>--mixed-context</Parameter>
 					</CEFCommandLine>
 				</Resources>
 				<Lifecycle>

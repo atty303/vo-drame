@@ -17,6 +17,13 @@
                 "$tsc-watch"
             ],
             "isBackground": true
+        },
+        {
+            "type": "npm",
+            "script": "bbuild",
+            "problemMatcher": [
+                "$tsc"
+            ]
         }
     ]
 }
