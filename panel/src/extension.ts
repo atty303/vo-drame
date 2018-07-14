@@ -46,11 +46,16 @@ class Extension {
     }
 
     onLoaded() {
-        const extBundle = this.csInterface.getSystemPath(csi.SystemPath.EXTENSION) + '/host/dist/main.js'
-        this.evalScript(`$.evalFile("${extBundle}")`)
+      this.reloadHostScript()
     }
 
     onBeforeUnload() {
+    }
+
+    async reloadHostScript(): Promise<void> {
+      const extBundle = this.csInterface.getSystemPath(csi.SystemPath.EXTENSION) + '/host/dist/main.js'
+      await this.evalScript(`$.evalFile("${extBundle}")`)
+      console.log("Host script was reloaded.")
     }
 
     reload(): void {

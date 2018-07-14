@@ -11,20 +11,24 @@
     "immutable": "^3.8.2",
     "noice-json-rpc": "^1.2.0",
     "tsmonad": "^0.8.0",
-    "vue": "^2.5.16"
+    "ve": "^0.1.3",
+    "vue": "^2.5.16",
+    "vue-hot-reload-api": "^2.3.0",
+    "vuetify": "^1.1.4"
   },
   "devDependencies": {
     "@types/base-x": "^1.0.29",
     "@types/node": "7",
     "@vue/component-compiler-utils": "^2.1.0",
     "parcel-bundler": "^1.9.6",
+    "stylus": "^0.54.5",
     "tslint": "^5.10.0",
     "types-for-adobe": "github:pravdomil/types-for-adobe",
     "typescript": "^2.9.2",
     "vue-template-compiler": "^2.5.16"
   },
   "scripts": {
-    "watch-panel": "parcel watch --out-dir panel/dist --out-file bundle.js --no-hmr panel/src/main.ts",
+    "watch-panel": "parcel watch --out-dir panel/dist --out-file bundle.js --hmr-hostname localhost panel/src/main.ts",
     "watch-host": "parcel watch --out-dir host/dist --no-hmr host/src/main.ts"
   }
 }
