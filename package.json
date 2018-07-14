@@ -5,17 +5,16 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "components": "^0.1.0",
+    "base-x": "^3.0.4",
     "csinterface-ts": "^1.0.3",
-    "eventemitter3": "^3.1.0",
     "extendscript-es5-shim-ts": "^0.0.1",
     "immutable": "^3.8.2",
-    "no": "^0.0.1",
     "noice-json-rpc": "^1.2.0",
     "tsmonad": "^0.8.0",
     "vue": "^2.5.16"
   },
   "devDependencies": {
+    "@types/base-x": "^1.0.29",
     "@types/node": "7",
     "@vue/component-compiler-utils": "^2.1.0",
     "parcel-bundler": "^1.9.6",
@@ -27,8 +26,5 @@
   "scripts": {
     "watch-panel": "parcel watch --out-dir panel/dist --out-file bundle.js --no-hmr panel/src/main.ts",
     "watch-host": "parcel watch --out-dir host/dist --no-hmr host/src/main.ts"
-  },
-  "alias": {
-    "events": "eventemitter3"
   }
 }

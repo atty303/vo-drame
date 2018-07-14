@@ -63,7 +63,7 @@ function _parse(header: any): Either<ParseError, WaveFileInfo> {
     if (header.riff_head !== 'RIFF') return Either.left({ error: 'Expected "RIFF" string at 0' })
     if (header.wave_identifier !== 'WAVE') return Either.left({ error: 'Expected "WAVE" string at 4' })
     if (header.fmt_identifier !== 'fmt ') return Either.left({ error: 'Expected "fmt " string at 8' })
-    if (!knownFormats.find(header.audio_format)) return Either.left({ error: `Unknown format: ${header.audio_format}` })
+    if (knownFormats.indexOf(header.audio_format) < 0) return Either.left({ error: `Unknown format: ${header.audio_format}` })
 
     const bytesPerSecond = header.sample_rate * header.num_channels * (header.bits_per_sample / 8)
     const duration = header.chunk_size / bytesPerSecond

@@ -11,7 +11,7 @@
 import Vue from 'vue'
 
 import Extension from '../extension'
-import * as s from '../speech/engine'
+import * as _debug from '../_debug'
 
 export default Vue.extend({
     data: () => {
@@ -33,8 +33,7 @@ export default Vue.extend({
         },
 
         test2() {
-            const kiritan = new s.VoiceroidExPlusKiritan()
-            kiritan.play({ text: 'はろー' })
+            _debug.debug1()
         }
     }
 })

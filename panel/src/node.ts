@@ -5,6 +5,9 @@ import * as _stream from 'stream'
 import * as _child_process from 'child_process'
 export var child_process: typeof _child_process = cep_node.require('child_process')
 
+import * as _crypto from 'crypto'
+export var crypto: typeof _crypto = cep_node.require('crypto')
+
 import { promisify } from './promisify'
 
 // can access node modules via cep_node in CEP environment.
