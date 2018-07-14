@@ -1,6 +1,7 @@
 <template>
   <v-layout fill-height>
     <v-flex xs12>
+      <v-btn @click="test1">Kick1</v-btn>
       <v-btn @click="test2">Kick2</v-btn>
     </v-flex>
   </v-layout>
