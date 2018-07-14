@@ -10,11 +10,10 @@ class EvalSocketLike implements jsonRpc.LikeSocket {
     constructor(csiInterface: csi.CSInterface) {
         this.csInterface = csiInterface;
     }
-    
+
     send(message: string): void {
         const expr = `_daihon_rpc_server(${JSON.stringify(message)})`
         this.csInterface.evalScript(expr, (result) => {
-            console.log(result)
             if (this.messageCallback) this.messageCallback.call(null, result)
         })
     }
@@ -53,7 +52,7 @@ class Extension {
 
     onBeforeUnload() {
     }
-    
+
     reload(): void {
         window.location.reload()
     }

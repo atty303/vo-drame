@@ -17,7 +17,7 @@ class Startup {
             });
             //window.location.reload();
         });
-        
+
         return 0;
     }
 }
@@ -26,7 +26,7 @@ class Startup {
 interface Scenario {
     // 登場人物
     allCharacters: Character[]
-    
+
     // シーン
     allScenes: Scene[]
 
@@ -41,17 +41,17 @@ interface Scene {
 
 interface Character {
     id: number
-    speechEngine: SpeechEngine
+//    speechEngine: SpeechEngine
 }
 
 // 台詞
 interface Dialogue {
     id: number
     character: Character
-    
+
     subtitle: Subtitle
     spech: Speech
-    
+
     preMargin: number
     postMargin: number
 }
@@ -83,6 +83,7 @@ class Speech extends Immutable.Record({
 }
 
 
+
 interface Project {
     sequences: Sequence[]
 }
@@ -96,11 +97,9 @@ interface Clip {
     track: number
 }
 
-import { SpeechEngine } from './speech';
-
 class SceneDirector {
     lastScene?: Scene
-     
+
     public update(newScene: Scene) {
         // diff(lastScene, newScene)
         // add/update speech

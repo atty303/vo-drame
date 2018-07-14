@@ -16,9 +16,10 @@
     "vue": "^2.5.16"
   },
   "devDependencies": {
-    "@types/node": "^10.5.2",
+    "@types/node": "7",
     "@vue/component-compiler-utils": "^2.1.0",
     "parcel-bundler": "^1.9.6",
+    "tslint": "^5.10.0",
     "types-for-adobe": "github:pravdomil/types-for-adobe",
     "typescript": "^2.9.2",
     "vue-template-compiler": "^2.5.16"

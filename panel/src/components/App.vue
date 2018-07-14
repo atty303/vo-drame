@@ -11,7 +11,7 @@
 import Vue from 'vue'
 
 import Extension from '../extension'
-import * as s from '../speech'
+import * as s from '../speech/engine'
 
 export default Vue.extend({
     data: () => {

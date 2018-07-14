@@ -1,22 +1,37 @@
 {
     "compilerOptions": {
-        //"allowJs": true,            // Allows JavaScript files to be compiled.
-        "lib": [                    // Default should be fine but may need fine-tuning. This works for our use case.
+        /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', or 'ESNEXT'. */
+        "target": "es5",
+
+        /* Specify module code generation: 'commonjs', 'amd', 'system', 'umd' or 'es2015'. */
+        "module": "es2015",
+
+        /* Specify library files to be included in the compilation:  */
+        "lib": [
             "dom",
             "es2015",
             "es2015.proxy"
         ],
-        "strict": true,             // Shorthand for the following four options:
-        // "noImplicitAny": true,
-        // "noImplicitThis": true,
-        // "alwaysStrict": true,
-        // "strictNullChecks": true,
-        "target": "es5",
-        "module": "es2015",
+
+        /* Allow JavaScript files to be compiled. */
+        "allowJs": false,
+        "checkJs": false,
+
+        /* Enable all strict type checking options. */
+        "strict": true, // noImplicitAny, noImplicitThis, alwaysStrict, strictNullChecks, strictFunctionTypes, strictPropertyInitialization
+
         "moduleResolution": "node",
+        /* Base directory to resolve non-relative module names. */
+        //"baseUrl"
+
+        /* Emit __importStar and __importDefault helpers for runtime babel ecosystem compatibility and enable --allowSyntheticDefaultImports for typesystem compatibility. */
         "esModuleInterop": true,
-        "sourceMap": true,
-        "baseUrl": "src"
+        "baseUrl": "src",
+
+        /* Disallow inconsistently-cased references to the same file. */
+        "forceConsistentCasingInFileNames": true,
+
+        "sourceMap": true
     },
     //"include": [
         //"../shared/**/*.ts"
