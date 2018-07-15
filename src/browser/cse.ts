@@ -1,7 +1,7 @@
 import { CSInterface, SystemPath, CSEvent } from 'csinterface-ts'
 import * as Comlink from 'comlinkjs'
 
-import { Communication } from '../shared'
+import { Bridge } from '../shared'
 
 const csi = new CSInterface()
 
@@ -11,12 +11,12 @@ export class BrowserEndpoint implements Comlink.Endpoint {
   private listeners: { [type: string]: any[] } = {}
 
   constructor() {
-    csi.addEventListener(Communication.MessageEventName, (event: CSEvent) => this.onmessage(event))
+    csi.addEventListener(Bridge.Events.ComlinkMessage, (event: CSEvent) => this.onmessage(event))
   }
 
   addEventListener(type: string, listener: any, options?: {} | undefined): void {
     if (!this.listeners[type]) this.listeners[type] = []
-    if (!(listener in this.listeners[type])) this.listeners[type].push(listener)
+    this.listeners[type].push(listener)
   }
   removeEventListener(type: string, listener: any, options?: {} | undefined): void {
     if (this.listeners[type]) {
@@ -26,13 +26,18 @@ export class BrowserEndpoint implements Comlink.Endpoint {
   }
 
   postMessage(message: any, transfer?: any[] | undefined): void {
-    const event = new CSEvent(Communication.MessageEventName, "APPLICATION", "PPRO", csi.getExtensionID())
-    csi.dispatchEvent(event)
-    console.log(message)
+    // const event = new CSEvent(Bridge.MessageEventName, "APPLICATION", "PPRO", csi.getExtensionID())
+    // csi.dispatchEvent(event)
+    const json = JSON.stringify(JSON.stringify(message))
+    evalScript(`${Bridge.NamespaceInGlobal}.${Bridge.Functions.ComlinkOnMessage}(${json})`, 5000)
+    console.log('postMessage', message)
   }
 
   onmessage(event: CSEvent): void {
     console.log("onmessage:", event)
+    const data = (event.data) as any
+    console.log(data)
+    ;(this.listeners['message'] || []).forEach((cb: any) => cb({ data: data.message }))
   }
 
 }
@@ -48,8 +53,11 @@ export async function evalScript(body: string, timeout: number): Promise<any> {
   })
 }
 
+
+
+
 export async function reloadHostScript(): Promise<void> {
-  const hostScriptFile = csi.getSystemPath(SystemPath.EXTENSION) + '/dist/host.js'
-  const r = await evalScript(`daihon.safeEvalFile("${hostScriptFile}")`, 5000)
+  const hostScriptFile = (csi.getSystemPath(SystemPath.EXTENSION) + '/dist/host.js')
+  const r = await evalScript(`daihon.safeEvalFile("${hostScriptFile}")`, 1000)
   console.log(`Host script was reloaded: ${r}`)
 }

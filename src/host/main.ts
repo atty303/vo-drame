@@ -1,80 +1,37 @@
 import 'extendscript-es5-shim-ts'
-//import 'core-js/core/object'
-
-// need polyfill
-$.global.ArrayBuffer = function() {}
-$.global.MessagePort = function() {}
-$.global.Symbol = function(name?: string) { return name; }
-
 
 declare var $: any
 
-$.writeln("hoge1")
+$.writeln("hoge2")
 
-declare var ExternalObject: any
+import { ns } from './namespace'
+import * as plugPlug from './externobject/plugPlug'
 
-type Scope = "GLOBAL" | "APPLICATION"
-declare class CSXSEvent {
-  type?: string
-  scope?: Scope
-  appId?: string
-  extensionId?: string
-  data?: string
-  dispath: () => void
+if (!ns.plugPlugObject) {
+  ns.plugPlugObject = new plugPlug.PlugPlugExternalObject()
 }
 
-const plugPlug = new ExternalObject('lib:PlugPlugExternalObject')
-
-
-import * as Comlink from 'extendscript-comlinkjs'
-
-class HostEndpoint implements Comlink.Endpoint {
-  private listeners: { [type: string]: any[] } = {}
-
-  constructor() {
-
-  }
-
-  addEventListener(type: string, listener: any, options?: {} | undefined): void {
-    if (!this.listeners[type]) this.listeners[type] = []
-    if (!(listener in this.listeners[type])) this.listeners[type].push(listener)
-  }
-  removeEventListener(type: string, listener: any, options?: {} | undefined): void {
-    if (this.listeners[type]) {
-      const i = this.listeners[type].indexOf(listener)
-      if (i >= 0) this.listeners[type].splice(i, 1)
-    }
-  }
-  postMessage(message: any, transfer?: any[]): void {
-    $.writeln(message)
-
-    const payload = {
-      message
-    }
-
-    const event = new CSXSEvent()
-    event.type = 'daihon'
-    event.data = JSON.stringify(payload)
-    event.dispath()
-  }
-
-  onmessage(message: string): void {
-    $.writeln('onmessage')
-    (this.listeners['message'] || []).forEach((cb: any) => cb(message))
-  }
-}
+import * as Comlink from './comlink'
+import { Bridge } from '../shared'
 
 class Api {
   debug() {
     $.writeln('debug')
+    return "from host"
   }
 }
 
+import * as cc from './comlink/comlink'
+const a = cc
+/*
+const endpoint = new Comlink.HostEndpoint(
+  (data) => plugPlug.PlugPlugExternalObject.dispatchEvent(Bridge.Events.ComlinkMessage, data),
+  (t) => $.writeln(t)
+)
+ns.endpoint = endpoint
+ns[Bridge.Functions.ComlinkOnMessage] = (data: string) => endpoint.onMessage(data)
 
-
-const endpoint = new HostEndpoint()
-$.global._endpoint = endpoint
-
+Comlink.expose(new Api(), endpoint)
 
 $.global.daihon = {
   safeEvalFile: function (filename: string) {
@@ -90,3 +47,4 @@ $.global.daihon = {
 }
 
 $.writeln("Loaded")
+*/

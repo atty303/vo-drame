@@ -5,8 +5,8 @@
             "es5"
         ],
         "strict": true,
-        "target": "es5",
-        "noLib": true,
+        "target": "es3",
+        //"noLib": true,
         "module": "commonjs"
     }
 }
