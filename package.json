@@ -30,8 +30,12 @@
     "vue-template-compiler": "^2.5.16"
   },
   "scripts": {
-    "watch": "run-p watch:*",
-    "watch:panel": "parcel watch --out-dir panel/dist --out-file bundle.js --hmr-hostname localhost panel/src/main.ts",
-    "watch:host": "parcel watch --out-dir host/dist --no-hmr host/src/main.ts"
+    "develop": "run-p develop:*",
+    "develop:browser": "parcel watch --out-file browser --public-url . --hmr-hostname=localhost src/browser/main.html",
+    "develop:host": "parcel watch --out-file host --no-hmr src/host/main.ts",
+    "_watch:panel": "parcel watch --out-dir panel/dist --out-file bundle.js --hmr-hostname localhost panel/src/main.ts",
+    "_watch:host": "parcel watch --out-dir host/dist --no-hmr host/src/main.ts",
+    "build": "run-s build:*",
+    "build:browser": "parcel build --out-file browser --public-url . src/browser/main.html"
   }
 }

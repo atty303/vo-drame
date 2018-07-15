@@ -5,3 +5,5 @@ yarn-error.log
 */dist/**/*.js
 */dist/**/*.map
 */dist/**/*.css
+
+dist/
