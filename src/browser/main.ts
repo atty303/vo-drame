@@ -1,29 +1,40 @@
+import Vue from 'vue'
+import Vuetify from 'vuetify'
 
-import * as s from '../shared/index'
+import AppComponent from './App.vue'
 import { BrowserEndpoint, reloadHostScript } from './cse'
+import { premiereApiClient } from './global'
 
 // stylesheets
-import './stylus/main.styl'
 import 'vuetify/dist/vuetify.min.css'
+import './stylus/main.styl'
 
 // Reload host(Premiere) script bundle when browser content was hot reloaded
 declare var module: any
 if (module.hot) {
-  module.hot.accept(() => reloadHostScript())
+  module.hot.dispose(() => onUnload(true))
+  module.hot.accept(() => onLoad(true))
 }
 
-console.log(s.shared)
-console.log("11")
-
-class Api {
-  debug() {
-  }
+function onLoad(isHotLoading: boolean) {
+  if (isHotLoading) reloadHostScript()
+  premiereApiClient.start()
 }
 
-import * as Comlink from 'comlinkjs'
-const api: Api = Comlink.proxy(new BrowserEndpoint(), new Api) as any
+function onUnload(isHotLoading: boolean) {
+  premiereApiClient.close()
+}
 
+Vue.use(Vuetify, {})
 
+const vm = new Vue({
+    el: '#app',
+    render: (h) => {
+        return h('app-component');
+    },
+    components: {
+        AppComponent
+    }
+})
 
-const a: any = api.debug()
-console.log(a)
+onLoad(false)

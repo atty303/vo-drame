@@ -11,7 +11,13 @@ export class BrowserEndpoint implements Comlink.Endpoint {
   private listeners: { [type: string]: any[] } = {}
 
   constructor() {
-    csi.addEventListener(Bridge.Events.ComlinkMessage, (event: CSEvent) => this.onmessage(event))
+  }
+
+  start() {
+    csi.addEventListener(Bridge.Events.ComlinkMessage, this.onmessage)
+  }
+  close() {
+    csi.removeEventListener(Bridge.Events.ComlinkMessage, this.onmessage)
   }
 
   addEventListener(type: string, listener: any, options?: {} | undefined): void {
@@ -28,12 +34,13 @@ export class BrowserEndpoint implements Comlink.Endpoint {
   postMessage(message: any, transfer?: any[] | undefined): void {
     // const event = new CSEvent(Bridge.MessageEventName, "APPLICATION", "PPRO", csi.getExtensionID())
     // csi.dispatchEvent(event)
-    const json = JSON.stringify(JSON.stringify(message))
-    evalScript(`${Bridge.NamespaceInGlobal}.${Bridge.Functions.ComlinkOnMessage}(${json})`, 5000)
+    const json = JSON.stringify(message)
+    const jsonAsLiteral = JSON.stringify(json)
+    evalScript(`${Bridge.NamespaceInGlobal}.${Bridge.Functions.ComlinkOnMessage}(${jsonAsLiteral})`, 5000)
     console.log('postMessage', message)
   }
 
-  onmessage(event: CSEvent): void {
+  onmessage = (event: CSEvent): void => {
     console.log("onmessage:", event)
     const data = (event.data) as any
     console.log(data)
@@ -60,6 +67,6 @@ export async function reloadHostScript(): Promise<void> {
   if ((r as string) === '<<SUCCESS>>') {
     console.log(`Host script was reload: ${hostScriptFile}`)
   } else {
-    console.error(`Host script was reloaded: ${r}`)
+    console.error(`reloadHostScript: failed ${r}`)
   }
 }

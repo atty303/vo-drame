@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import Debug from "/components/Debug.vue";
+import Debug from "./components/Debug.vue";
 
 export default Vue.extend({
   name: "App",

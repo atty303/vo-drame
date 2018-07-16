@@ -4,22 +4,27 @@
     "target": "es5",
     /* Specify module code generation: 'commonjs', 'amd', 'system', 'umd' or 'es2015'. */
     "module": "es2015",
+    "moduleResolution": "node",
+    /* Emit __importStar and __importDefault helpers for runtime babel ecosystem compatibility and enable --allowSyntheticDefaultImports for typesystem compatibility. */
+    "esModuleInterop": true,
     /* Specify library files to be included in the compilation:  */
     "lib": [
       "dom",
       "es2015",
       "es2015.proxy"
     ],
+    "types": [
+      "reflect-metadata"
+    ],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     /* Allow JavaScript files to be compiled. */
     "allowJs": false,
     "checkJs": false,
     /* Enable all strict type checking options. */
     "strict": true, // noImplicitAny, noImplicitThis, alwaysStrict, strictNullChecks, strictFunctionTypes, strictPropertyInitialization
-    "moduleResolution": "node",
     /* Base directory to resolve non-relative module names. */
     //"baseUrl"
-    /* Emit __importStar and __importDefault helpers for runtime babel ecosystem compatibility and enable --allowSyntheticDefaultImports for typesystem compatibility. */
-    "esModuleInterop": true,
     /*
         "baseUrl": ".",
         "paths": {
@@ -30,7 +35,9 @@
 
         /* Disallow inconsistently-cased references to the same file. */
     "forceConsistentCasingInFileNames": true,
-    "sourceMap": true
+    "sourceMap": true,
+
+
   },
   "include": [
     "../shared/**/*.ts"

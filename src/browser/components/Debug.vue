@@ -10,8 +10,8 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import Extension from '../extension'
-import * as _debug from '../_debug'
+import * as cse from '../cse'
+import { premiereApi } from '../global'
 
 export default Vue.extend({
     data: () => {
@@ -19,17 +19,17 @@ export default Vue.extend({
     },
     methods: {
         async test1() {
-            const p = await Extension.api.project.currentProject()
+            const p = await premiereApi.project.currentProject()
             console.log(p)
 
-            Extension.api.project.importMedia({
+            premiereApi.project.importMedia({
                 id: p.id,
                 files: ["C:/Users/atty/Documents/Adobe/Premiere Pro/12.0/media/001.wav"]
             })
         },
 
         test2() {
-            _debug.debug1()
+
         }
     }
 })
