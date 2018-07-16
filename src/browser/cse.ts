@@ -54,10 +54,12 @@ export async function evalScript(body: string, timeout: number): Promise<any> {
 }
 
 
-
-
 export async function reloadHostScript(): Promise<void> {
   const hostScriptFile = (csi.getSystemPath(SystemPath.EXTENSION) + '/dist/host.js')
   const r = await evalScript(`daihon.safeEvalFile("${hostScriptFile}")`, 1000)
-  console.log(`Host script was reloaded: ${r}`)
+  if ((r as string) === '<<SUCCESS>>') {
+    console.log(`Host script was reload: ${hostScriptFile}`)
+  } else {
+    console.error(`Host script was reloaded: ${r}`)
+  }
 }

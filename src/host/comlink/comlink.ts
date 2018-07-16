@@ -201,8 +201,6 @@ export function expose(
     }
     if (irequest.type === "SET") {
       obj[irequest.property] = irequest.value;
-      // FIXME: ES6 Proxy Handler `set` methods are supposed to return a
-      // boolean. To show good will, we return true asynchronously ¯\_(ツ)_/¯
       iresult = true;
     }
 
@@ -220,7 +218,9 @@ function unwrapValue(arg: WrappedValue): {} {
     const transferHandler = transferHandlers[arg.type]!;
     return transferHandler.deserialize(arg.value);
   } else if (isRawWrappedValue(arg)) {
-    for (const wrappedChildValue of arg.wrappedChildren || []) {
+    const _children = arg.wrappedChildren || []
+    for (let i = 0; i < _children.length; ++i) {
+      const wrappedChildValue = _children[i]
       if (!(wrappedChildValue.wrappedValue.type in transferHandlers))
         throw Error(
           `Unknown value type "${arg.type}" at ${wrappedChildValue.path.join(

@@ -21,9 +21,6 @@ class Api {
   }
 }
 
-import * as cc from './comlink/comlink'
-const a = cc
-/*
 const endpoint = new Comlink.HostEndpoint(
   (data) => plugPlug.PlugPlugExternalObject.dispatchEvent(Bridge.Events.ComlinkMessage, data),
   (t) => $.writeln(t)
@@ -36,7 +33,8 @@ Comlink.expose(new Api(), endpoint)
 $.global.daihon = {
   safeEvalFile: function (filename: string) {
     try {
-      return $.evalFile(filename);
+      $.evalFile(filename);
+      return "<<SUCCESS>>"
     } catch (e) {
       return e;
     }
@@ -47,4 +45,3 @@ $.global.daihon = {
 }
 
 $.writeln("Loaded")
-*/

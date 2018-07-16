@@ -25,4 +25,5 @@ const api: Api = Comlink.proxy(new BrowserEndpoint(), new Api) as any
 
 
 
-api.debug()
+const a: any = api.debug()
+console.log(a)
