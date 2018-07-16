@@ -1,5 +1,5 @@
 import { Either } from 'tsmonad'
-import { fs_promise } from './node'
+import { fs_promises } from './node'
 
 export interface WaveFileInfo {
     duration: number
@@ -73,9 +73,9 @@ function _parse(header: any): Either<ParseError, WaveFileInfo> {
 }
 
 export const parseFile = async (file: string): Promise<WaveFileInfo> => {
-    const fd = await fs_promise.open(file, 'r')
+    const fd = await fs_promises.open(file, 'r')
     const buffer = new Buffer(40)
-    await fs_promise.read(fd, buffer, 0, 40, 0)
+    await fs_promises.read(fd, buffer, 0, 40, 0)
     return new Promise<WaveFileInfo>((resolve, reject) =>
         _parse(parseHeader(buffer)).caseOf({
             left: (error) => reject(error),

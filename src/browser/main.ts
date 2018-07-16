@@ -10,7 +10,6 @@ import 'vuetify/dist/vuetify.min.css'
 import './stylus/main.styl'
 
 // Reload host(Premiere) script bundle when browser content was hot reloaded
-declare var module: any
 if (module.hot) {
   module.hot.dispose(() => onUnload(true))
   module.hot.accept(() => onLoad(true))
