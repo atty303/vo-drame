@@ -1,25 +1,36 @@
+/// <reference types="types-for-adobe/Premiere/2018" />
+
+// Start timer for load time measurement (read this variable to reset timer)
+$.hiresTimer
+
+$.writeln(`###< Begin loading at ${new Date()}`)
+
 import 'extendscript-es5-shim-ts'
-
-declare var $: any
-
-$.writeln("hoge2")
-
 import { ns } from './namespace'
 import * as plugPlug from './externobject/plugPlug'
+import * as Comlink from './comlink'
+import { Bridge } from '../shared'
+import { Premiere } from '../shared'
+import * as s from './service'
 
 if (!ns.plugPlugObject) {
   ns.plugPlugObject = new plugPlug.PlugPlugExternalObject()
+  $.writeln("PlugPlugExternalObject was loaded")
 }
 
-import * as Comlink from './comlink'
-import { Bridge } from '../shared'
-
-class Api {
-  debug() {
-    $.writeln('debug')
-    return "from host"
-  }
+function resolve<T>(value: T): Promise<T> {
+  return value as any as Promise<T>
 }
+
+//Promise.resolve = <T>(value: T) => value
+
+
+
+
+const service = new s.PremiereService(
+  new s.Helper(),
+  new s.ProjectService()
+)
 
 const endpoint = new Comlink.HostEndpoint(
   (data) => plugPlug.PlugPlugExternalObject.dispatchEvent(Bridge.Events.ComlinkMessage, data),
@@ -28,20 +39,7 @@ const endpoint = new Comlink.HostEndpoint(
 ns.endpoint = endpoint
 ns[Bridge.Functions.ComlinkOnMessage] = (data: string) => endpoint.onMessage(data)
 
-Comlink.expose(new Api(), endpoint)
+Comlink.expose(service, endpoint)
 
-$.global.daihon = {
-  safeEvalFile: function (filename: string) {
-    try {
-      $.evalFile(filename);
-      return "<<SUCCESS>>"
-    } catch (e) {
-      return e;
-    }
-  },
-  start: function () {
-    Comlink.expose(new Api(), endpoint)
-  }
-}
-
-$.writeln("Loaded")
+const LoadEndedAt = $.hiresTimer
+$.writeln(`###> Loaded in ${LoadEndedAt} ms`)

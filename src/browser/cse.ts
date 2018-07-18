@@ -36,26 +36,42 @@ export class BrowserEndpoint implements Comlink.Endpoint {
     // csi.dispatchEvent(event)
     const json = JSON.stringify(message)
     const jsonAsLiteral = JSON.stringify(json)
-    evalScript(`${Bridge.NamespaceInGlobal}.${Bridge.Functions.ComlinkOnMessage}(${jsonAsLiteral})`, 5000)
-    console.log('postMessage', message)
+    evalScript(`${Bridge.NamespaceInGlobal}.${Bridge.Functions.ComlinkOnMessage}(${jsonAsLiteral})`)
+    console.debug('-->', message)
   }
 
   onmessage = (event: CSEvent): void => {
-    console.log("onmessage:", event)
+    console.debug('<-- ', event)
     const data = (event.data) as any
-    console.log(data)
     ;(this.listeners['message'] || []).forEach((cb: any) => cb({ data: data.message }))
   }
 
 }
 
-export async function evalScript(body: string, timeout: number): Promise<any> {
+class CSExtendScriptError extends Error {
+  constructor(obj: any) {
+    super(obj.message)
+    //this.name = obj.name
+    //(this as any).source = obj.source
+    //number, fileName, line, source, start, end
+  }
+}
+
+export async function evalScript(body: string): Promise<any> {
   return new Promise((resolve, reject) => {
-    // 評価時に例外が発生すると callback が呼ばれず Promise が完了しない…
-    const timer = setTimeout(() => reject(new CsiError(`evalScript timeout: ${body}`)), timeout)
-    csi.evalScript(body, res => {
-      clearTimeout(timer)
-      resolve(res)
+    const expr = `
+      try {
+        ${body}
+      } catch (e) {
+        'CSE:' + JSON.stringify(e)
+      }
+      `
+    csi.evalScript(expr, res => {
+      if (typeof res === 'string' && res.startsWith('CSE:')) {
+        reject(new CSExtendScriptError(JSON.parse(res.slice(4))))
+      } else {
+        resolve(res)
+      }
     })
   })
 }
@@ -63,10 +79,11 @@ export async function evalScript(body: string, timeout: number): Promise<any> {
 
 export async function reloadHostScript(): Promise<void> {
   const hostScriptFile = (csi.getSystemPath(SystemPath.EXTENSION) + '/dist/host.js')
-  const r = await evalScript(`daihon.safeEvalFile("${hostScriptFile}")`, 1000)
-  if ((r as string) === '<<SUCCESS>>') {
+  const expr = `$.evalFile("${hostScriptFile}") && undefined`
+  try {
+    await evalScript(expr)
     console.log(`Host script was reload: ${hostScriptFile}`)
-  } else {
-    console.error(`reloadHostScript: failed ${r}`)
+  } catch (e) {
+    console.error('reloadHostScript: failed:', e)
   }
 }

@@ -1,23 +1,23 @@
 export namespace Premiere {
   export interface Api {
-      helper: HelperApi
-      project: ProjectApi
+    helper: HelperApi
+    project: ProjectApi
   }
 
   export interface HelperApi {
-      version(): string
+    version(): Promise<string>
   }
 
-  type ProjectId = string
+  export type ProjectId = string
 
-  interface Project {
-      id: ProjectId
-      name: string
-      path: string
+  export interface Project {
+    id: ProjectId
+    name: string
+    path: string
   }
 
   export interface ProjectApi {
-      currentProject(): Project
-      importMedia(params: { id: ProjectId, files: string[], targetBin?: any }): boolean
+    currentProject(): Promise<Project>
+    importMedia(params: { id: ProjectId, files: string[], targetBin?: any }): Promise<boolean>
   }
 }

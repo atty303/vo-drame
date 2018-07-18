@@ -5,19 +5,19 @@ import AppComponent from './App.vue'
 import { BrowserEndpoint, reloadHostScript } from './cse'
 import { premiereApiClient } from './global'
 
+
+
 // stylesheets
 import 'vuetify/dist/vuetify.min.css'
 import './stylus/main.styl'
 
-// Reload host(Premiere) script bundle when browser content was hot reloaded
 if (module.hot) {
-  module.hot.dispose(() => onUnload(true))
   module.hot.accept(() => onLoad(true))
+  module.hot.dispose(() => onUnload(true))
 }
 
 function onLoad(isHotLoading: boolean) {
-  if (isHotLoading) reloadHostScript()
-  premiereApiClient.start()
+  if (!isHotLoading) premiereApiClient.start()
 }
 
 function onUnload(isHotLoading: boolean) {

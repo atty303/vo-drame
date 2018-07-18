@@ -22,14 +22,13 @@ export default Vue.extend({
             const p = await premiereApi.project.currentProject()
             console.log(p)
 
-            premiereApi.project.importMedia({
-                id: p.id,
-                files: ["C:/Users/atty/Documents/Adobe/Premiere Pro/12.0/media/001.wav"]
-            })
+            // premiereApi.project.importMedia({
+            //     id: p.id,
+            //     files: ["C:/Users/atty/Documents/Adobe/Premiere Pro/12.0/media/001.wav"]
+            // })
         },
 
         test2() {
-
         }
     }
 })
