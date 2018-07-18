@@ -2,10 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 
 import AppComponent from './App.vue'
-import { BrowserEndpoint, reloadHostScript } from './cse'
 import { premiereApiClient } from './global'
-
-
 
 // stylesheets
 import 'vuetify/dist/vuetify.min.css'
