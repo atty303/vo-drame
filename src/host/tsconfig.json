@@ -3,6 +3,7 @@
         "allowJs": true,            // Allows JavaScript files to be compiled.
         "noLib": true,
         "strict": true,
+        "forceConsistentCasingInFileNames": true,
         "target": "es3",
         "module": "commonjs"
     }

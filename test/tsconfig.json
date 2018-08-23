@@ -1,0 +1,48 @@
+{
+  "compilerOptions": {
+    /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', or 'ESNEXT'. */
+    "target": "es5",
+    /* Specify module code generation: 'commonjs', 'amd', 'system', 'umd' or 'es2015'. */
+    "module": "es2015",
+    "moduleResolution": "node",
+    /* Emit __importStar and __importDefault helpers for runtime babel ecosystem compatibility and enable --allowSyntheticDefaultImports for typesystem compatibility. */
+    "esModuleInterop": true,
+    /* Specify library files to be included in the compilation:  */
+    "lib": [
+      "dom",
+      "es2015",
+      "es2015.proxy"
+    ],
+    "types": [
+      "reflect-metadata"
+    ],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    /* Allow JavaScript files to be compiled. */
+    "allowJs": false,
+    "checkJs": false,
+    /* Enable all strict type checking options. */
+    "strict": true, // noImplicitAny, noImplicitThis, alwaysStrict, strictNullChecks, strictFunctionTypes, strictPropertyInitialization
+    /* Base directory to resolve non-relative module names. */
+    //"baseUrl"
+    /*
+        "baseUrl": ".",
+        "paths": {
+          "@/*": ["*"],
+          "@shared/*": ["../shared/*"]
+        },
+        */
+
+        /* Disallow inconsistently-cased references to the same file. */
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true
+
+
+  },
+  "include": [
+    "../shared/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

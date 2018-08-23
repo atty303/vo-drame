@@ -5,7 +5,7 @@ export namespace Premiere {
   }
 
   export interface HelperApi {
-    version(): Promise<string>
+    version(): string
   }
 
   export type ProjectId = string
@@ -17,7 +17,8 @@ export namespace Premiere {
   }
 
   export interface ProjectApi {
-    currentProject(): Promise<Project>
-    importMedia(params: { id: ProjectId, files: string[], targetBin?: any }): Promise<boolean>
+    currentProject(): Project
+    getProjectById(id: Premiere.ProjectId): Premiere.Project | undefined
+    importMedia(params: { id: ProjectId, files: string[], targetBin?: any }): boolean
   }
 }

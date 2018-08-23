@@ -11,27 +11,28 @@ function nativeToLocal(project: Project): Premiere.Project {
   }
 }
 
-function findProject(id: Premiere.ProjectId): Maybe<Project> {
+function findProject(id: Premiere.ProjectId): Project | undefined {
   for (let i = 0; i < app.projects.numProjects; ++i) {
     const p: Project = (app.projects as any)[i]
-    if (p.documentID === id) return Maybe.just(p);
+    if (p.documentID === id) return p;
   }
-  return Maybe.nothing()
 }
 
 export class ProjectService implements Premiere.ProjectApi {
-  currentProject(): Promise<Premiere.Project> {
+  currentProject(): Premiere.Project {
     return nativeToLocal(app.project)
   }
 
-  getProjectById(id: Premiere.ProjectId): Promise<Maybe<Premiere.Project>> {
-    return findProject(id).map(_ => nativeToLocal(_))
+  getProjectById(id: Premiere.ProjectId): Premiere.Project | undefined {
+    const p = findProject(id)
+    if (p) return nativeToLocal(p)
   }
 
-  importMedia(params: { id: Premiere.ProjectId, files: string[], targetBin?: any }): Promise<boolean> {
-    return findProject(params.id).caseOf({
-      just: p => (p as any).importFiles(params.files, true),
-      nothing: () => false
-    })
+  importMedia(params: { id: Premiere.ProjectId, files: string[], targetBin?: any }): boolean {
+    const p = findProject(params.id)
+    if (p) {
+      return (p as any).importFiles(params.files, true)
+    }
+    return false
   }
 }
