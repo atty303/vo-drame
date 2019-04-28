@@ -12,7 +12,7 @@ async function runBundle() {
   const browserBundler = new Bundler(path.join(root, 'src/browser/main.html'), {
     watch: true,
     outFile: 'browser',
-    publicUrl: '.',
+    publicUrl: './',
     hmr: true,
     hmrHostname: 'localhost',
   })

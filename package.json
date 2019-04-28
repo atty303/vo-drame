@@ -40,7 +40,7 @@
     "vue-template-compiler": "^2.5.16"
   },
   "scripts": {
-    "develop": "node scripts/watch.js",
+    "serve": "node scripts/watch.js",
     "build": "run-s build:*",
     "build:browser": "parcel build --out-file browser --public-url . src/browser/main.html",
     "test": "mocha"
