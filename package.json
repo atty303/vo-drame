@@ -5,10 +5,12 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@handsontable/vue": "^4.0.0",
     "base-x": "^3.0.4",
     "comlinkjs": "^3.0.3",
     "csinterface-ts": "^1.0.3",
     "extendscript-es5-shim-ts": "^0.0.1",
+    "handsontable": "^7.0.2",
     "immutable": "^3.8.2",
     "inversify": "^4.13.0",
     "noice-json-rpc": "^1.2.0",
