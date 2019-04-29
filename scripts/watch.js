@@ -4,7 +4,7 @@ const Bundler = require('parcel-bundler')
 const root = path.resolve(path.join(__dirname, '..'))
 
 async function runBundle() {
-  const hostBunlder = new Bundler(path.join(root, 'src/host/main.ts'), {
+  const hostBundler = new Bundler(path.join(root, 'src/host/main.ts'), {
     watch: true,
     outFile: 'host',
     hmr: false
@@ -17,11 +17,18 @@ async function runBundle() {
     hmrHostname: 'localhost',
   })
 
-  hostBunlder.on('bundled', (bundle) => {
+  hostBundler.on('bundled', (bundle) => {
     browserBundler.onChange(path.join(root, 'src/browser/hmr.ts'))
   })
 
-  await Promise.all([hostBunlder.bundle(), browserBundler.bundle()])
+  // ;[hostBundler, browserBundler].forEach(async (bundler) => {
+  //   await new Promise((resolve) => {
+  //     bundler.on('bundled', resolve)
+  //     bundler.bundle()
+  //   })
+  // })
+
+  await Promise.all([hostBundler.bundle(), browserBundler.bundle()])
 }
 
 runBundle()
