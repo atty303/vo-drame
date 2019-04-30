@@ -7,6 +7,7 @@ import { premiereApiClient } from './global'
 // stylesheets
 import 'vuetify/dist/vuetify.min.css'
 import './stylus/main.styl'
+import '../../node_modules/handsontable/dist/handsontable.full.css'
 
 if (module.hot) {
   module.hot.accept(() => onLoad(true))

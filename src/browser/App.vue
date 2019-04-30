@@ -2,26 +2,30 @@
   <v-app dark>
     <v-toolbar fixed flat height="30px">
       <v-toolbar-items>
-        <v-btn flat>Debug</v-btn>
       </v-toolbar-items>
     </v-toolbar>
 
     <v-content>
       <v-container fluid>
-        <debug />
+        <div>
+          <script-table></script-table>
+        </div>
       </v-container>
     </v-content>
   </v-app>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import Debug from "./components/Debug.vue";
+import {Component, Vue} from 'vue-property-decorator'
+import Debug from './components/Debug.vue'
+import ScriptTable from './components/ScriptTable.vue'
 
-export default Vue.extend({
-  name: "App",
+@Component({
   components: {
-    Debug
+    Debug,
+    ScriptTable,
   }
-});
+})
+export default class App extends Vue {
+}
 </script>
