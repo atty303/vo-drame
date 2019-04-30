@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ExtensionManifest Version="7.0" ExtensionBundleId="io.github.atty303.daihonroid" ExtensionBundleVersion="0.1.0" ExtensionBundleName="DaihonRoid" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ExtensionManifest Version="7.0" ExtensionBundleId="io.github.atty303.vo-drame" ExtensionBundleVersion="0.1.0" ExtensionBundleName="VoDrame" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<Author>atty303</Author>
 
 	<ExtensionList>
-		<Extension Id="io.github.atty303.daihonroid.core" Version="0.1.0" />
+		<Extension Id="io.github.atty303.vo-drame.core" Version="0.1.0" />
 	</ExtensionList>
 
 	<ExecutionEnvironment>
@@ -14,12 +14,12 @@
 			<Locale Code="All" />
 		</LocaleList>
 		<RequiredRuntimeList>
-			<RequiredRuntime Name="CSXS" Version="7.0" />
+			<RequiredRuntime Name="CSXS" Version="9.0" />
 		</RequiredRuntimeList>
 	</ExecutionEnvironment>
 
 	<DispatchInfoList>
-		<Extension Id="io.github.atty303.daihonroid.core">
+		<Extension Id="io.github.atty303.vo-drame.core">
 			<DispatchInfo>
 				<Resources>
 					<MainPath>./dist/browser.html</MainPath>
@@ -36,7 +36,7 @@
 				</Lifecycle>
 				<UI>
 					<Type>Panel</Type>
-					<Menu>DaihonRoid</Menu>
+					<Menu>vo:Drame</Menu>
 					<Geometry>
 						<Size>
 							<Height>600</Height>

@@ -14,7 +14,7 @@ function nativeToLocal(project: Project): Premiere.Project {
 function findProject(id: Premiere.ProjectId): Project | undefined {
   for (let i = 0; i < app.projects.numProjects; ++i) {
     const p: Project = (app.projects as any)[i]
-    if (p.documentID === id) return p;
+    if (p.documentID === id) return p
   }
 }
 
@@ -35,4 +35,13 @@ export class ProjectService implements Premiere.ProjectApi {
     }
     return false
   }
+
+  getProjectMetadata(id: Premiere.ProjectId): string | undefined {
+    return 'foo'
+    const p = findProject(id)
+    if (p) {
+      return "hoge"
+    }
+    return "fuga"
+
 }

@@ -24,6 +24,17 @@ function resolve<T>(value: T): Promise<T> {
 
 //Promise.resolve = <T>(value: T) => value
 
+ExternalObject.AdobeXMPScript = new ExternalObject('lib:AdobeXMPScript')
+function xmpTest(projectItem: ProjectItem)
+{
+  const xmpBlob = projectItem.getXMPMetadata()
+  $.writeln('meta:' + xmpBlob)
+  const xmp = new XMPMeta(xmpBlob)
+  xmp.setProperty(XMPConst.NS_DM, 'foobar', 'hogehoge')
+  const xmpAsString = xmp.serialize()
+  projectItem.setXMPMetadata(xmpAsString)
+}
+
 
 
 

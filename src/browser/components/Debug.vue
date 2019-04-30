@@ -19,6 +19,11 @@ export default class Debug extends Vue {
     const p = await premiereApi.project.currentProject()
     console.log(p)
 
+    const p2 = await premiereApi.project.currentProject()
+    console.log(p2)
+
+    console.log('meta', await premiereApi.project.getProjectMetadata())
+
     // premiereApi.project.importMedia({
     //     id: p.id,
     //     files: ["C:/Users/atty/Documents/Adobe/Premiere Pro/12.0/media/001.wav"]

@@ -106,6 +106,8 @@ function onUnload(isHotLoading: boolean) {
   premiereApiClient.close()
 }
 
+
+
 new Vue({
   render: (h) => h(App),
 }).$mount('#app')
