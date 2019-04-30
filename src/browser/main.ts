@@ -1,13 +1,97 @@
 import Vue from 'vue'
-import Vuetify from 'vuetify'
 
-import AppComponent from './App.vue'
-import { premiereApiClient } from './global'
+import App from './App.vue'
+import {premiereApiClient} from './global'
 
 // stylesheets
-import 'vuetify/dist/vuetify.min.css'
-import './stylus/main.styl'
+import './styles/main.styl'
+import './styles/quasar.styl'
 import '../../node_modules/handsontable/dist/handsontable.full.css'
+import '@quasar/extras/material-icons/material-icons.css'
+
+import {
+  default as Quasar,
+  CloseMenu,
+  ClosePopup,
+  Notify,
+  QAvatar,
+  QBreadcrumbs,
+  QBreadcrumbsEl,
+  QBtn,
+  QBtnDropdown,
+  QDialog,
+  QDrawer,
+  QField,
+  QFooter,
+  QHeader,
+  QIcon,
+  QInput,
+  QItem,
+  QItemLabel,
+  QItemSection,
+  QLayout,
+  QList,
+  QPage,
+  QPageContainer,
+  QRadio,
+  QSelect,
+  QSeparator,
+  QSpace,
+  QTable,
+  QTd,
+  QToggle,
+  QToolbar,
+  QToolbarTitle,
+  QTr,
+  QUploader,
+  Ripple,
+} from 'quasar'
+
+Vue.use(Quasar, {
+  config: {},
+  components: {
+    QAvatar,
+    QBreadcrumbs,
+    QBreadcrumbsEl,
+    QBtn,
+    QBtnDropdown,
+    QDialog,
+    QDrawer,
+    QField,
+    QFooter,
+    QHeader,
+    QIcon,
+    QInput,
+    QItem,
+    QItemLabel,
+    QItemSection,
+    QLayout,
+    QList,
+    QPage,
+    QPageContainer,
+    QRadio,
+    QSelect,
+    QSeparator,
+    QSpace,
+    QTable,
+    QTd,
+    QToggle,
+    QToolbar,
+    QToolbarTitle,
+    QTr,
+    QUploader,
+  },
+  directives: {
+    CloseMenu,
+    ClosePopup,
+    Ripple,
+  },
+  plugins: {
+    Notify,
+  },
+})
+
+Vue.config.productionTip = false
 
 if (module.hot) {
   module.hot.accept(() => onLoad(true))
@@ -22,16 +106,8 @@ function onUnload(isHotLoading: boolean) {
   premiereApiClient.close()
 }
 
-Vue.use(Vuetify, {})
-
-const vm = new Vue({
-    el: '#app',
-    render: (h) => {
-        return h('app-component');
-    },
-    components: {
-        AppComponent
-    }
-})
+new Vue({
+  render: (h) => h(App),
+}).$mount('#app')
 
 onLoad(false)

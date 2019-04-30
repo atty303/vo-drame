@@ -1,10 +1,8 @@
 <template>
-  <v-layout fill-height>
-    <v-flex xs12>
-      <v-btn @click="test1">Kick1</v-btn>
-      <v-btn @click="test2">Kick2</v-btn>
-    </v-flex>
-  </v-layout>
+  <div>
+    <q-btn label="1" color="white" text-color="black" @click="test1"></q-btn>
+    <q-btn label="2" color="white" text-color="black" @click="test2"></q-btn>
+  </div>
 </template>
 
 <script lang="ts">

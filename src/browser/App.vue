@@ -1,18 +1,16 @@
 <template>
-  <v-app dark>
-    <v-toolbar fixed flat height="30px">
-      <v-toolbar-items>
-      </v-toolbar-items>
-    </v-toolbar>
-
-    <v-content>
-      <v-container fluid>
-        <div>
-          <script-table></script-table>
-        </div>
-      </v-container>
-    </v-content>
-  </v-app>
+  <q-layout view="hHh Lpr lFf">
+    <q-header>
+      <q-toolbar class="shadow-2">
+      </q-toolbar>
+    </q-header>
+    <q-page-container>
+      <q-page padding>
+        <debug></debug>
+        <script-table></script-table>
+      </q-page>
+    </q-page-container>
+  </q-layout>
 </template>
 
 <script lang="ts">

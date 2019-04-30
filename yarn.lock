@@ -773,6 +773,11 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
+"@quasar/extras@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@quasar/extras/-/extras-1.1.1.tgz#f514bf5108c5de964949aaa336ba65266a25fd88"
+  integrity sha512-n9aQ9N9GBaRF15v3Rm5QDoeLOHFzjQ874f+54TthWmaQvx/8DV6fG/bwLgA6AjLUIZJs3ogm4J1KqWO+4zSg1g==
+
 "@types/base-x@^1.0.29":
   version "1.0.30"
   resolved "https://registry.yarnpkg.com/@types/base-x/-/base-x-1.0.30.tgz#10d078f9fad69d96c8f0dfe80137012a4c692ad7"
@@ -6208,6 +6213,11 @@ qs@~6.5.2:
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
   integrity sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
 
+quasar@^1.0.0-beta.19:
+  version "1.0.0-beta.19"
+  resolved "https://registry.yarnpkg.com/quasar/-/quasar-1.0.0-beta.19.tgz#e835da672f027fd87f7a0d448b2235ffdab044c9"
+  integrity sha512-8DSET+Jsoi7QvUXZuFxt1yB3tSR2uuk5Sc24vfrBQGSDzUqHJcxxvwrs4RT7zy3u96iAnWIG4hnNRw5X6/JXXw==
+
 querystring-es3@^0.2.0, querystring-es3@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/querystring-es3/-/querystring-es3-0.2.1.tgz#9ec61f79049875707d69414596fd907a4d711e73"
@@ -7967,11 +7977,6 @@ vue@^2.5.16:
   version "2.6.10"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.10.tgz#a72b1a42a4d82a721ea438d1b6bf55e66195c637"
   integrity sha512-ImThpeNU9HbdZL3utgMCq0oiMzAkt1mcgy3/E6zWC/G6AaQoeuFdsl9nDhTDU3X1R6FK7nsIUuRACVcjI+A2GQ==
-
-vuetify@^1.1.4:
-  version "1.5.13"
-  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-1.5.13.tgz#b2e406ebdc59723c5ecbd2d0595d3d2ae0cac812"
-  integrity sha512-mUOs9znDmMO/A2I117B/ZHyFlwSqkKplhSL8G2EnS+m0rvZv2Uqjo9idOBbdhaJ3A9sJWT6wDUFywEYuuIcu+g==
 
 w3c-hr-time@^1.0.1:
   version "1.0.1"
