@@ -6,23 +6,23 @@
 </template>
 
 <script lang="ts">
-import {Component, Vue} from 'vue-property-decorator'
+import {Component, Vue, Inject} from 'vue-property-decorator'
 
 import * as cse from "../cse"
-import {premiereApi, premiereApiClient} from '../global'
+import {premiereApi} from '../global'
+import {Premiere} from '../../shared'
 
 @Component({})
 export default class Debug extends Vue {
-  name: string = 'hello'
+  @Inject('api')
+  api!: Premiere.Api
 
   async test1() {
-    const p = await premiereApi.project.currentProject()
-    console.log(p)
+    //const p = await premiereApi.project.currentProject()
+    //console.log(p)
 
-    const p2 = await premiereApi.project.currentProject()
+    const p2 = await this.api.helper.version()
     console.log(p2)
-
-    console.log('meta', await premiereApi.project.getProjectMetadata())
 
     // premiereApi.project.importMedia({
     //     id: p.id,

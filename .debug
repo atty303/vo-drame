@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ExtensionList>
-    <Extension Id="io.github.atty303.daihonroid.core">
+    <Extension Id="io.github.atty303.vo-drame.core">
         <HostList>
             <Host Name="PPRO" Port="8000"/>
         </HostList>

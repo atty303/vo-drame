@@ -1,51 +1,40 @@
-import { CSInterface, SystemPath, CSEvent } from 'csinterface-ts'
-import * as Comlink from 'comlinkjs'
+import {EventEmitter} from 'events'
+import {CSInterface, SystemPath, CSEvent} from 'csinterface-ts'
+import * as noice from 'noice-json-rpc'
 
-import { Bridge } from '../shared'
+import {Bridge} from '../shared'
 
 const csi = new CSInterface()
 
 class CsiError extends Error {}
 
-export class BrowserEndpoint implements Comlink.Endpoint {
-  private listeners: { [type: string]: any[] } = {}
-
+export class BrowserEndpoint extends EventEmitter implements noice.LikeSocket {
   constructor() {
+    super()
   }
 
   start() {
-    csi.addEventListener(Bridge.Events.ComlinkMessage, this.onmessage)
+    csi.addEventListener(Bridge.Events.RpcMessage, this.onMessage)
+    this.emit('open')
   }
   close() {
-    csi.removeEventListener(Bridge.Events.ComlinkMessage, this.onmessage)
+    csi.removeEventListener(Bridge.Events.RpcMessage, this.onMessage)
   }
 
-  addEventListener(type: string, listener: any, options?: {} | undefined): void {
-    if (!this.listeners[type]) this.listeners[type] = []
-    this.listeners[type].push(listener)
-  }
-  removeEventListener(type: string, listener: any, options?: {} | undefined): void {
-    if (this.listeners[type]) {
-      const i = this.listeners[type].indexOf(listener)
-      if (i >= 0) this.listeners[type].splice(i, 1)
-    }
-  }
-
-  postMessage(message: any, transfer?: any[] | undefined): void {
-    // const event = new CSEvent(Bridge.MessageEventName, "APPLICATION", "PPRO", csi.getExtensionID())
-    // csi.dispatchEvent(event)
-    const json = JSON.stringify(message)
-    const jsonAsLiteral = JSON.stringify(json)
-    evalScript(`${Bridge.NamespaceInGlobal}.${Bridge.Functions.ComlinkOnMessage}(${jsonAsLiteral})`)
+  send(message: string): void {
+    const messageAsLiteral = JSON.stringify(message)
+    evalScript(`${Bridge.NamespaceInGlobal}.${Bridge.Functions.SendRpcMessage}(${messageAsLiteral})`)
     console.debug('-->', message)
   }
 
-  onmessage = (event: CSEvent): void => {
+  onMessage = (event: CSEvent): void => {
     console.debug('<-- ', event)
-    const data = (event.data) as any
-    ;(this.listeners['message'] || []).forEach((cb: any) => cb({ data: data.message }))
+    let data = event.data as any
+    if (typeof data !== 'string') {
+      data = JSON.stringify(data)
+    }
+    this.emit('message', data)
   }
-
 }
 
 class CSExtendScriptError extends Error {
@@ -56,6 +45,8 @@ class CSExtendScriptError extends Error {
     //number, fileName, line, source, start, end
   }
 }
+
+
 
 export async function evalScript(body: string): Promise<any> {
   return new Promise((resolve, reject) => {
@@ -75,7 +66,6 @@ export async function evalScript(body: string): Promise<any> {
     })
   })
 }
-
 
 export async function reloadHostScript(): Promise<void> {
   const hostScriptFile = (csi.getSystemPath(SystemPath.EXTENSION) + '/dist/host.js')

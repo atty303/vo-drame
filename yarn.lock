@@ -1862,11 +1862,6 @@ combined-stream@^1.0.5, combined-stream@^1.0.6, combined-stream@~1.0.5, combined
   dependencies:
     delayed-stream "~1.0.0"
 
-comlinkjs@^3.0.3:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/comlinkjs/-/comlinkjs-3.2.0.tgz#26874718627f4fbd3e45fe5c39b2ddf001e56bed"
-  integrity sha512-2eawZHTjhK5Y1G6RZtSIqLijedIsULYQxnkC4MOhleUPgLRatMhqlflzWClyWRb6cLrLU6oAxDTT/Bl/fw/H7g==
-
 command-exists@^1.2.6:
   version "1.2.8"
   resolved "https://registry.yarnpkg.com/command-exists/-/command-exists-1.2.8.tgz#715acefdd1223b9c9b37110a149c6392c2852291"
@@ -2988,6 +2983,11 @@ eventemitter3@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.1.0.tgz#090b4d6cdbd645ed10bf750d4b5407942d7ba163"
   integrity sha512-ivIvhpq/Y0uSjcHDcOIccjmYjGLcP09MFGE7ysAwkAvkXfpZlC985pH2/ui64DKazbTW/4kN3yqozUxlXzI6cA==
+
+eventemitter3@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.1.2.tgz#2d3d48f9c346698fce83a85d7d664e98535df6e7"
+  integrity sha512-tvtQIeLVHjDkJYnzf2dgVMxfuSGJeM/7UCG17TT4EumTfNtF+0nebF/4zWOIkCreAbtNqhGEboB6BWrwqNaw4Q==
 
 events@^1.1.1:
   version "1.1.1"
@@ -7667,9 +7667,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-"types-for-adobe@github:pravdomil/types-for-adobe":
+types-for-adobe@^1.5.0:
   version "1.5.0"
-  resolved "https://codeload.github.com/pravdomil/types-for-adobe/tar.gz/3da441bbd57e161a30ce91c6882206e0a4153ab1"
+  resolved "https://registry.yarnpkg.com/types-for-adobe/-/types-for-adobe-1.5.0.tgz#7d2e2e3ecbac9aee8f4e2e5cedc4cf41dc52c748"
+  integrity sha512-pxQnNhi3WX7MqV0xFpE32rOqEFovGNw22b95ThsqOQWMSxfaIEjjzZIlWLDs6ukp8q2a78xSfxrmvxMtZR/+kg==
 
 typescript@^3.0.0:
   version "3.4.5"
@@ -7901,11 +7902,6 @@ validate-npm-package-license@^3.0.1:
   dependencies:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
-
-ve@^0.1.3:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/ve/-/ve-0.1.3.tgz#71cd55a6bca9393b4df894559501a852f1475cf4"
-  integrity sha1-cc1VprypOTtN+JRVlQGoUvFHXPQ=
 
 vendors@^1.0.0:
   version "1.0.2"

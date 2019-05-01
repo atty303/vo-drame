@@ -1,7 +1,5 @@
 import Vue from 'vue'
-
 import App from './App.vue'
-import {premiereApiClient} from './global'
 
 // stylesheets
 import './styles/main.styl'
@@ -98,18 +96,31 @@ if (module.hot) {
   module.hot.dispose(() => onUnload(true))
 }
 
+import * as noice from 'noice-json-rpc'
+
+import {BrowserEndpoint} from './cse'
+import {Premiere} from '../shared'
+
+const endpoint = new BrowserEndpoint()
+const client = new noice.Client(endpoint, {logConsole: true})
+const api: Premiere.Api = client.api()
+
+export const premiereApi: Premiere.Api = api
+
 function onLoad(isHotLoading: boolean) {
-  if (!isHotLoading) premiereApiClient.start()
+  if (!isHotLoading) endpoint.start()
 }
 
 function onUnload(isHotLoading: boolean) {
-  premiereApiClient.close()
+  endpoint.close()
 }
 
-
+onLoad(false)
 
 new Vue({
   render: (h) => h(App),
+  provide: {
+    api,
+  }
 }).$mount('#app')
 
-onLoad(false)

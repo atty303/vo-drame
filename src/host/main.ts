@@ -3,54 +3,36 @@
 // Start timer for load time measurement (read this variable to reset timer)
 $.hiresTimer
 
-$.writeln(`###< Begin loading at ${new Date()}`)
+// console shims
+import {console} from './console'
+$.global.console = console
+
+console.log(`###< Begin loading at ${new Date()}`)
 
 import 'extendscript-es5-shim-ts'
-import { ns } from './namespace'
+import * as noice from 'noice-json-rpc-extendscript'
+
+import {ns} from './namespace'
+import {HostEndpoint} from './rpc/endpoint'
 import * as plugPlug from './externobject/plugPlug'
-import * as Comlink from './comlink'
-import { Bridge } from '../shared'
-import { Premiere } from '../shared'
-import * as s from './service'
+import {Bridge} from '../shared'
 
+// Load the PlugPlug plugin for messaging
 if (!ns.plugPlugObject) {
-  ns.plugPlugObject = new plugPlug.PlugPlugExternalObject()
-  $.writeln("PlugPlugExternalObject was loaded")
+  ns.plugPlugObject = new plugPlug.PlugPlugExternalObject('io.github.atty303.vo-drame')
+  console.log("PlugPlugExternalObject was loaded")
 }
 
-function resolve<T>(value: T): Promise<T> {
-  return value as any as Promise<T>
-}
-
-//Promise.resolve = <T>(value: T) => value
-
-ExternalObject.AdobeXMPScript = new ExternalObject('lib:AdobeXMPScript')
-function xmpTest(projectItem: ProjectItem)
-{
-  const xmpBlob = projectItem.getXMPMetadata()
-  $.writeln('meta:' + xmpBlob)
-  const xmp = new XMPMeta(xmpBlob)
-  xmp.setProperty(XMPConst.NS_DM, 'foobar', 'hogehoge')
-  const xmpAsString = xmp.serialize()
-  projectItem.setXMPMetadata(xmpAsString)
-}
-
-
-
-
-const service = new s.PremiereService(
-  new s.Helper(),
-  new s.ProjectService()
-)
-
-const endpoint = new Comlink.HostEndpoint(
-  (data) => plugPlug.PlugPlugExternalObject.dispatchEvent(Bridge.Events.ComlinkMessage, data),
-  (t) => $.writeln(t)
+// Create host-side endpoint of the rpc server
+const endpoint = new HostEndpoint(
+  (data) => ns.plugPlugObject.dispatchEvent(Bridge.Events.RpcMessage, data),
+  (t) => console.log(t)
 )
 ns.endpoint = endpoint
-ns[Bridge.Functions.ComlinkOnMessage] = (data: string) => endpoint.onMessage(data)
+ns[Bridge.Functions.SendRpcMessage] = (data: string) => endpoint.message(data)
 
-Comlink.expose(service, endpoint)
+// Create the rpc server
+const server = new noice.Server(endpoint, {logConsole: true})
+server.expose('helper.version', (params) => "foobar")
 
-const LoadEndedAt = $.hiresTimer
-$.writeln(`###> Loaded in ${LoadEndedAt} ms`)
+console.log(`###> Loaded in ${$.hiresTimer} ms`)
