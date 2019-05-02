@@ -7,6 +7,7 @@ import {Premiere} from '../../shared'
 export interface ScenarioService {
   loadScene(): Promise<Scene | undefined>
   saveScene(scene: Scene): Promise<void>
+  syncScene(scene: Scene): Promise<void>
 }
 
 export class ScenarioServiceImpl implements ScenarioService {

@@ -5,6 +5,7 @@
         "strict": true,
         "forceConsistentCasingInFileNames": true,
         "target": "es3",
-        "module": "commonjs"
+        "module": "commonjs",
+        "experimentalDecorators": true
     }
 }

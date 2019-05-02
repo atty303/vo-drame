@@ -4,7 +4,7 @@ import * as noice from 'noice-json-rpc'
 
 import {Bridge} from '../shared'
 
-const csi = new CSInterface()
+export const csi = new CSInterface()
 
 class CsiError extends Error {}
 

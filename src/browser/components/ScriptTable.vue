@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import {HotTable} from '@handsontable/vue'
-import {Component, Vue, Inject} from 'vue-property-decorator';
+import {Component, Vue, Inject, Emit} from 'vue-property-decorator';
 import {Scene, Dialogue} from '../domain'
 import * as service from '../service'
 import { HotTableComponent, HotTableData } from '@handsontable/vue/types';
@@ -30,7 +30,7 @@ export default class ScriptTable extends Vue {
     colHeaders: ['ID', 'Text'],
     filters: true,
     dropdownMenu: true,
-    minSpareRows: 1,
+    //minSpareRows: 1,
     schema: Dialogue,
     columns: [
       {data: 'id'},
@@ -43,12 +43,22 @@ export default class ScriptTable extends Vue {
     return (this.$refs.hot as any).hotInstance
   }
 
+  get scene(): Scene {
+    const scene = new Scene()
+    scene.dialogues = this.hot.getSourceData() as any
+    return scene
+  }
+
   async created() {
-    console.log('hot-table created')
     const scene = await this.scenarioService.loadScene()
     if (scene) {
       this.hot.loadData(scene.dialogues)
     }
+  }
+
+  @Emit()
+  sceneChanged(): Scene {
+    return this.scene
   }
 
   afterChange(change: Array<any>, source: string) {
@@ -57,12 +67,11 @@ export default class ScriptTable extends Vue {
       return
     } else if (source == 'edit') {
       const [row, prop, oldValue, newValue] = change
+      this.sceneChanged()
     }
 
     console.log(this.hot.getSourceData());
-    const scene = new Scene()
-    scene.dialogues = this.hot.getSourceData() as any
-    this.scenarioService.saveScene(scene)
+    this.scenarioService.saveScene(this.scene)
   }
 }
 
