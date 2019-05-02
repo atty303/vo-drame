@@ -46,7 +46,7 @@
     "serve": "node scripts/watch.js",
     "build": "run-s build:*",
     "build:host": "parcel build --out-file host --no-minify src/host/main.ts",
-    "build:browser": "parcel build --out-file browser --public-url ./ src/browser/main.html",
+    "build:browser": "parcel build --out-file browser -t browser --public-url ./ src/browser/main.html",
     "test": "mocha"
   }
 }

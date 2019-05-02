@@ -1,7 +1,6 @@
-import { Maybe } from 'tsmonad'
-import { Premiere } from '../../shared'
-
-const app = ($.global.app as App)
+import {Maybe} from 'tsmonad'
+import {Premiere} from '../../shared'
+import {ExposeFn} from './type'
 
 function nativeToLocal(project: Project): Premiere.Project {
   return {
@@ -19,6 +18,10 @@ function findProject(id: Premiere.ProjectId): Project | undefined {
 }
 
 export class ProjectService implements Premiere.ProjectApi {
+  expose(f: ExposeFn): void {
+    f('currentProject', this.currentProject)
+  }
+
   currentProject(): Premiere.Project {
     return nativeToLocal(app.project)
   }
@@ -35,13 +38,4 @@ export class ProjectService implements Premiere.ProjectApi {
     }
     return false
   }
-
-  getProjectMetadata(id: Premiere.ProjectId): string | undefined {
-    return 'foo'
-    const p = findProject(id)
-    if (p) {
-      return "hoge"
-    }
-    return "fuga"
-
 }

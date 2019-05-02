@@ -117,10 +117,14 @@ function onUnload(isHotLoading: boolean) {
 
 onLoad(false)
 
+import * as service from './service'
+
+const scenarioService = new service.ScenarioServiceImpl(api)
+
 new Vue({
   render: (h) => h(App),
   provide: {
     api,
+    scenarioService,
   }
 }).$mount('#app')
-

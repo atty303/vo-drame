@@ -1,7 +1,14 @@
-import { Premiere } from '../../shared'
+import {Premiere} from '../../shared'
+import {ExposeFn} from './type'
 
-export * from './helper'
 export * from './project'
+export * from './helper'
+
+function wrapExposeFn(prefix: string, f: ExposeFn): ExposeFn {
+  return (name: string, handler: (params: any) => any) => {
+    f(prefix + name, handler)
+  }
+}
 
 export class PremiereService implements Premiere.Api {
   helper: Premiere.HelperApi
@@ -11,4 +18,9 @@ export class PremiereService implements Premiere.Api {
     this.helper = helper
     this.project = project
   }
+
+  expose(f: ExposeFn): void {
+    (this.project as any).expose(wrapExposeFn('project.', f))
+  }
+
 }

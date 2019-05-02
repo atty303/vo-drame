@@ -33,6 +33,15 @@ ns[Bridge.Functions.SendRpcMessage] = (data: string) => endpoint.message(data)
 
 // Create the rpc server
 const server = new noice.Server(endpoint, {logConsole: true})
-server.expose('helper.version', (params) => "foobar")
+
+import * as service from './service'
+
+const srv = new service.PremiereService(
+  new service.HelperService(),
+  new service.ProjectService()
+)
+
+srv.expose(server.expose.bind(server))
+
 
 console.log(`###> Loaded in ${$.hiresTimer} ms`)

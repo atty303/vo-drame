@@ -18,8 +18,15 @@ export var fs_promises = {
     access: promisify(fs.access),
     stat: promisify(fs.stat),
     open: promisify(fs.open) as (a: string | Buffer, b: string | number) => Promise<number>,
+    close: promisify(fs.close) as (fd: number) => Promise<void>,
     read: promisify(fs.read),
-    rename: promisify(fs.rename as (a: string, b: string, c: (err: NodeJS.ErrnoException, a: undefined) => void) => void)
+    readFile: promisify(fs.readFile) as (filename: string, encoding: string) => Promise<string | Buffer>,
+    write: promisify(fs.write) as (fd: number, data: any) => Promise<void>,
+    rename: promisify(fs.rename as (a: string, b: string, c: (err: NodeJS.ErrnoException, a: undefined) => void) => void),
+    exists: (path: string | Buffer) => new Promise((resolve) => {
+      fs.exists(path, (exists) => resolve(exists))
+    }),
+    mkdir: promisify(fs.mkdir as (path: string | Buffer) => Promise<void>),
 }
 
 export var stream: typeof _stream = cep_node.require('stream')
