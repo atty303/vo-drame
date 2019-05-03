@@ -22,6 +22,7 @@ export var fs_promises = {
     read: promisify(fs.read),
     readFile: promisify(fs.readFile) as (filename: string, encoding: string) => Promise<string | Buffer>,
     write: promisify(fs.write) as (fd: number, data: any) => Promise<void>,
+    writeFile: promisify(fs.writeFile) as (filename: string, data: any) => Promise<void>,
     rename: promisify(fs.rename as (a: string, b: string, c: (err: NodeJS.ErrnoException, a: undefined) => void) => void),
     exists: (path: string | Buffer) => new Promise((resolve) => {
       fs.exists(path, (exists) => resolve(exists))

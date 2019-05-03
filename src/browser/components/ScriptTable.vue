@@ -3,13 +3,14 @@
     <hot-table
       ref="hot"
       :settings="hotSettings"
+      :data="initialData"
       licenseKey="non-commercial-and-evaluation"></hot-table>
   </div>
 </template>
 
 <script lang="ts">
 import {HotTable} from '@handsontable/vue'
-import {Component, Vue, Inject, Emit} from 'vue-property-decorator';
+import {Component, Vue, Inject, Emit, Prop} from 'vue-property-decorator';
 import {Scene, Dialogue} from '../domain'
 import * as service from '../service'
 import { HotTableComponent, HotTableData } from '@handsontable/vue/types';
@@ -24,8 +25,10 @@ export default class ScriptTable extends Vue {
   @Inject('scenarioService')
   private scenarioService!: service.ScenarioService
 
+  @Prop({default: new Scene()})
+  initialScene!: Scene
+
   readonly hotSettings = {
-    data: [],
     rowHeaders: true,
     colHeaders: ['ID', 'Text'],
     filters: true,
@@ -39,6 +42,10 @@ export default class ScriptTable extends Vue {
     afterChange: this.afterChange.bind(this),
   }
 
+  get initialData() {
+    return this.initialScene.dialogues
+  }
+
   get hot(): Handsontable {
     return (this.$refs.hot as any).hotInstance
   }
@@ -49,11 +56,7 @@ export default class ScriptTable extends Vue {
     return scene
   }
 
-  async created() {
-    const scene = await this.scenarioService.loadScene()
-    if (scene) {
-      this.hot.loadData(scene.dialogues)
-    }
+  async mounted() {
   }
 
   @Emit()
@@ -68,10 +71,10 @@ export default class ScriptTable extends Vue {
     } else if (source == 'edit') {
       const [row, prop, oldValue, newValue] = change
       this.sceneChanged()
+      console.log(this.hot.getSourceData())
+      this.scenarioService.saveScene(this.scene)
     }
 
-    console.log(this.hot.getSourceData());
-    this.scenarioService.saveScene(this.scene)
   }
 }
 

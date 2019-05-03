@@ -2,15 +2,20 @@
   <q-layout view="hHh Lpr lFf" :style="appStyle">
     <q-header>
       <q-toolbar class="" style="min-height: 30px">
-        <q-btn label="同期" icon="sync" size="xs" flat dense :loading="isSyncing" @click="onSync"></q-btn>
+        <span class="q-mr-xs">シーン</span>
+        <q-input outlined dense options-dense dark hide-bottom-space></q-input>
+        <q-icon name="link" class="q-mx-xs"></q-icon>
+        <span class="q-mr-xs">シーケンス</span>
+        <q-input outlined dense options-dense dark hide-bottom-space></q-input>
         <q-separator vertical inset dark class="q-mx-sm"></q-separator>
         <q-space></q-space>
+        <q-btn label="同期" icon="sync" size="xs" flat dense :loading="isSyncing" @click="onSync"></q-btn>
         <q-btn label="Refresh" size="xs" flat dense @click="onRefresh"></q-btn>
       </q-toolbar>
     </q-header>
     <q-page-container>
       <q-page padding>
-        <script-table @sceneChanged="onSceneChanged"></script-table>
+        <script-table :initialScene="scene" @sceneChanged="onSceneChanged"></script-table>
         <debug></debug>
       </q-page>
     </q-page-container>
@@ -45,11 +50,13 @@ export default class App extends Vue {
     return `font-family: '${skin.baseFontFamily}'; font-size: ${skin.baseFontSize}px; background-color: ${bgColor}`
   }
 
-  created() {
+  async created() {
     const skin = csi.getHostEnvironment().appSkinInfo
     console.log(skin.systemHighlightColor)
     colors.setBrand('primary', this.uiColorToCss(skin.systemHighlightColor))
     colors.setBrand('secondary', this.uiColorToCss(skin.appBarBackgroundColor.color))
+
+    this.scene = await this.scenarioService.loadScene()
   }
 
   private uiColorToCss(c: any): string {
@@ -82,4 +89,5 @@ export default class App extends Vue {
     color: #fff;
 }
 </style>
+
 

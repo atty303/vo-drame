@@ -119,7 +119,9 @@ onLoad(false)
 
 import * as service from './service'
 
-const scenarioService = new service.ScenarioServiceImpl(api)
+const scenarioService = new service.ScenarioServiceImpl(
+  api,
+  new service.SpeechFileAdapterImpl())
 
 new Vue({
   render: (h) => h(App),

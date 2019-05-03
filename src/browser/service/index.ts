@@ -2,7 +2,11 @@ import {fs, fs_promises, path} from '../util/node'
 import {Scene} from '../domain'
 import {Premiere} from '../../shared'
 
+import * as wavfile from '../util/wavfile'
+import axios from 'axios'
+import {SpeechFileAdapter, SpeechFile} from './SpeechFile'
 
+export * from './SpeechFile'
 
 export interface ScenarioService {
   loadScene(): Promise<Scene | undefined>
@@ -11,8 +15,9 @@ export interface ScenarioService {
 }
 
 export class ScenarioServiceImpl implements ScenarioService {
-  constructor(api: Premiere.Api) {
+  constructor(api: Premiere.Api, speechFileAdapter: SpeechFileAdapter) {
     this.api = api
+    this.speechFileAdapter = speechFileAdapter
   }
 
   async loadScene(): Promise<Scene | undefined> {
@@ -40,6 +45,18 @@ export class ScenarioServiceImpl implements ScenarioService {
     }
   }
 
+  async syncScene(scene: Scene): Promise<void> {
+    const bundlePath = await this.ensureBundlePath()
+    const ps = scene.dialogues.map(async (dialogue) => {
+      const res = await axios.post('https://vom303.ap.ngrok.io', dialogue.text, {responseType: 'arraybuffer'})
+      console.log(res)
+      const filePath = path.join(bundlePath, dialogue.text + '.wav')
+      return await this.speechFileAdapter.write(filePath, Buffer.from(res.data))
+    })
+    const speeches = await Promise.all(ps)
+    console.log(speeches)
+  }
+
   private async ensureBundlePath(): Promise<string> {
     const p = await this.api.project.currentProject()
     const bundlePath = p.path.slice(0, p.path.lastIndexOf('.')) + '.drame'
@@ -50,4 +67,5 @@ export class ScenarioServiceImpl implements ScenarioService {
   }
 
   private api: Premiere.Api
+  private speechFileAdapter: SpeechFileAdapter
 }

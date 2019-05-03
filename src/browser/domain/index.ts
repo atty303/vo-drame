@@ -5,5 +5,5 @@ export class Dialogue {
 }
 
 export class Scene {
-  dialogues: Dialogue[]
+  dialogues: Dialogue[] = []
 }
