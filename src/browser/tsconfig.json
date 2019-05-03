@@ -24,22 +24,17 @@
     /* Enable all strict type checking options. */
     "strict": true, // noImplicitAny, noImplicitThis, alwaysStrict, strictNullChecks, strictFunctionTypes, strictPropertyInitialization
     /* Base directory to resolve non-relative module names. */
-    //"baseUrl"
-    /*
-        "baseUrl": ".",
-        "paths": {
-          "@/*": ["*"],
-          "@shared/*": ["../shared/*"]
-        },
-        */
-
-        /* Disallow inconsistently-cased references to the same file. */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["*"],
+      "@shared/*": ["../shared/*"]
+    },
+    /* Disallow inconsistently-cased references to the same file. */
     "forceConsistentCasingInFileNames": true,
     "sourceMap": true,
-
-
   },
   "include": [
+    "**/*.ts",
     "../shared/**/*.ts"
   ],
   "exclude": [

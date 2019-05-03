@@ -2,15 +2,16 @@
   <q-layout view="hHh Lpr lFf" :style="appStyle">
     <q-header>
       <q-toolbar class="" style="min-height: 30px">
-        <span class="q-mr-xs">シーン</span>
-        <q-input outlined dense options-dense dark hide-bottom-space></q-input>
-        <q-icon name="link" class="q-mx-xs"></q-icon>
         <span class="q-mr-xs">シーケンス</span>
-        <q-input outlined dense options-dense dark hide-bottom-space></q-input>
+        <sequence-select v-model="selectedSequenceId"></sequence-select>
         <q-separator vertical inset dark class="q-mx-sm"></q-separator>
         <q-space></q-space>
-        <q-btn label="同期" icon="sync" size="xs" flat dense :loading="isSyncing" @click="onSync"></q-btn>
-        <q-btn label="Refresh" size="xs" flat dense @click="onRefresh"></q-btn>
+        <q-btn label="同期" icon="sync" size="xs" flat dense
+          :loading="isSyncing"
+          :disable="!canSync"
+          @click="onSync"
+        ></q-btn>
+        <q-btn label="再読み込み" icon="reload" size="xs" flat dense @click="onRefresh"></q-btn>
       </q-toolbar>
     </q-header>
     <q-page-container>
@@ -30,11 +31,14 @@ import {Scene} from './domain'
 import * as service from './service'
 import {csi} from './cse'
 import {colors} from 'quasar'
+import SequenceSelect from './components/SequenceSelect.vue'
+import { Premiere } from '../shared';
 
 @Component({
   components: {
     Debug,
     ScriptTable,
+    SequenceSelect,
   }
 })
 export default class App extends Vue {
@@ -43,11 +47,16 @@ export default class App extends Vue {
 
   scene: Scene = new Scene()
   isSyncing: boolean = false
+  selectedSequenceId: Premiere.SequenceId = ''
 
   get appStyle(): string {
     const skin = csi.getHostEnvironment().appSkinInfo
     const bgColor = this.uiColorToCss(skin.panelBackgroundColor.color)
     return `font-family: '${skin.baseFontFamily}'; font-size: ${skin.baseFontSize}px; background-color: ${bgColor}`
+  }
+
+  get canSync(): boolean {
+    return this.selectedSequenceId.length > 0
   }
 
   async created() {

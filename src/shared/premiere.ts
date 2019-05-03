@@ -19,6 +19,15 @@ export namespace Premiere {
   export interface ProjectApi {
     currentProject(): Project
     getProjectById(id: Premiere.ProjectId): Premiere.Project | undefined
+    getSequences(params: { id: Premiere.ProjectId }): Premiere.Sequence[]
     importMedia(params: { id: ProjectId, files: string[], targetBin?: any }): boolean
+  }
+
+  export type SequenceId = string
+
+  export interface Sequence {
+    id: number
+    sequenceId: SequenceId
+    name: string
   }
 }

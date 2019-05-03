@@ -1,9 +1,8 @@
-import {fs, fs_promises, path} from '../util/node'
-import {Scene} from '../domain'
-import {Premiere} from '../../shared'
-
-import * as wavfile from '../util/wavfile'
 import axios from 'axios'
+
+import {fs, fs_promises, path} from '../util/node'
+import {Scene} from '@/domain'
+import {Premiere} from '../../shared'
 import {SpeechFileAdapter, SpeechFile} from './SpeechFile'
 
 export * from './SpeechFile'
@@ -12,6 +11,7 @@ export interface ScenarioService {
   loadScene(): Promise<Scene | undefined>
   saveScene(scene: Scene): Promise<void>
   syncScene(scene: Scene): Promise<void>
+  getSequences(): Promise<Premiere.Sequence[]>
 }
 
 export class ScenarioServiceImpl implements ScenarioService {
@@ -46,15 +46,33 @@ export class ScenarioServiceImpl implements ScenarioService {
   }
 
   async syncScene(scene: Scene): Promise<void> {
+    const p = await this.api.project.currentProject()
     const bundlePath = await this.ensureBundlePath()
+
+    // render speechs
     const ps = scene.dialogues.map(async (dialogue) => {
       const res = await axios.post('https://vom303.ap.ngrok.io', dialogue.text, {responseType: 'arraybuffer'})
-      console.log(res)
       const filePath = path.join(bundlePath, dialogue.text + '.wav')
       return await this.speechFileAdapter.write(filePath, Buffer.from(res.data))
     })
-    const speeches = await Promise.all(ps)
-    console.log(speeches)
+    const speechFiles = await Promise.all(ps)
+    console.log(speechFiles)
+
+    this.api.project.importMedia({id: p.id, files: speechFiles.map(f => f.path)})
+
+    let startAt = 0
+    speechFiles.forEach((file) => {
+      const r = {
+        ...file,
+        startAt: startAt
+      }
+      startAt += file.duration + 1
+    })
+  }
+
+  async getSequences(): Promise<Premiere.Sequence[]> {
+    const p = await this.api.project.currentProject()
+    return this.api.project.getSequences({id: p.id})
   }
 
   private async ensureBundlePath(): Promise<string> {

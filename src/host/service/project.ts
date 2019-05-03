@@ -20,6 +20,8 @@ function findProject(id: Premiere.ProjectId): Project | undefined {
 export class ProjectService implements Premiere.ProjectApi {
   expose(f: ExposeFn): void {
     f('currentProject', this.currentProject)
+    f('getSequences', this.getSequences)
+    f('importMedia', this.importMedia)
   }
 
   currentProject(): Premiere.Project {
@@ -29,6 +31,22 @@ export class ProjectService implements Premiere.ProjectApi {
   getProjectById(id: Premiere.ProjectId): Premiere.Project | undefined {
     const p = findProject(id)
     if (p) return nativeToLocal(p)
+  }
+
+  getSequences(params: { id: Premiere.ProjectId }): Premiere.Sequence[] {
+    const p = findProject(params.id)
+    const sequences: Premiere.Sequence[] = []
+    if (p) {
+      for (let i = 0; i < p.sequences.numSequences; ++i) {
+        const s: Sequence = (p.sequences as any)[i]
+        sequences.push({
+          id: s.id,
+          sequenceId: s.sequenceID as Premiere.SequenceId,
+          name: s.name,
+        })
+      }
+    }
+    return sequences
   }
 
   importMedia(params: { id: Premiere.ProjectId, files: string[], targetBin?: any }): boolean {
