@@ -32,6 +32,7 @@ export default class ScriptTable extends Vue {
     rowHeaders: true,
     colHeaders: ['ID', 'Text'],
     filters: true,
+    contextMenu: true,
     dropdownMenu: true,
     //minSpareRows: 1,
     schema: Dialogue,
@@ -71,10 +72,7 @@ export default class ScriptTable extends Vue {
     } else if (source == 'edit') {
       const [row, prop, oldValue, newValue] = change
       this.sceneChanged()
-      console.log(this.hot.getSourceData())
-      this.scenarioService.saveScene(this.scene)
     }
-
   }
 }
 

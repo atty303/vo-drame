@@ -72,13 +72,15 @@ export default class App extends Vue {
     const skin = csi.getHostEnvironment().appSkinInfo
     colors.setBrand('primary', uiColorToCss(skin.systemHighlightColor))
     colors.setBrand('secondary', uiColorToCss(skin.appBarBackgroundColor.color))
-
-    this.scene = await this.scenarioService.loadScene()
   }
 
   @Watch('selectedSequenceId')
-  onSelectedSequenceIdChanged(): void {
+  async onSelectedSequenceIdChanged(): Promise<void> {
     localStorage.setItem('selectedSequenceId', this.selectedSequenceId)
+
+    if (this.selectedSequenceId) {
+      this.scene = await this.scenarioService.loadScene(this.selectedSequenceId)
+    }
   }
 
   onRefresh(): void {
@@ -87,6 +89,9 @@ export default class App extends Vue {
 
   onSceneChanged(scene: Scene): void {
     this.scene = scene
+    if (this.selectedSequenceId) {
+      this.scenarioService.saveScene(this.selectedSequenceId, this.scene)
+    }
   }
 
   async onSync(): Promise<void> {

@@ -8,8 +8,8 @@ import {SpeechFileAdapter, SpeechFile} from './SpeechFile'
 export * from './SpeechFile'
 
 export interface ScenarioService {
-  loadScene(): Promise<Scene | undefined>
-  saveScene(scene: Scene): Promise<void>
+  loadScene(sequenceId: Premiere.SequenceId): Promise<Scene | undefined>
+  saveScene(sequenceId: Premiere.SequenceId,  scene: Scene): Promise<void>
   syncScene(scene: Scene): Promise<void>
   getSequences(): Promise<Premiere.Sequence[]>
 }
@@ -20,8 +20,9 @@ export class ScenarioServiceImpl implements ScenarioService {
     this.speechFileAdapter = speechFileAdapter
   }
 
-  async loadScene(): Promise<Scene | undefined> {
-    const xmlString = await this.api.sequence.getScene({id: '88ada2ab-134f-41c8-b625-5cf7b7bff811'})
+  async loadScene(sequenceId: Premiere.SequenceId): Promise<Scene | undefined> {
+    let scene: Scene | undefined = undefined
+    const xmlString = await this.api.sequence.getScene({id: sequenceId})
     if (xmlString) {
       const parser = new DOMParser()
       const xml = parser.parseFromString(xmlString as any, 'text/xml')
@@ -29,10 +30,12 @@ export class ScenarioServiceImpl implements ScenarioService {
       if (node) {
         const a = node.textContent
         if (a) {
-          console.log(JSON.parse(a))
+          scene = JSON.parse(a)
         }
       }
     }
+    return scene
+    /*
     const bundlePath = await this.ensureBundlePath()
     try {
       const json = await fs_promises.readFile(path.join(bundlePath, 'scene.json'), 'utf-8')
@@ -42,10 +45,12 @@ export class ScenarioServiceImpl implements ScenarioService {
       console.error(`couldn't load scene`, e)
       return
     }
+    */
   }
 
-  async saveScene(scene: Scene): Promise<void> {
-    await this.api.sequence.setScene({id: '88ada2ab-134f-41c8-b625-5cf7b7bff811', value: JSON.stringify(scene)})
+  async saveScene(sequenceId: Premiere.SequenceId,  scene: Scene): Promise<void> {
+    await this.api.sequence.setScene({id: sequenceId, value: JSON.stringify(scene)})
+    /*
     const bundlePath = await this.ensureBundlePath()
     const fd = await fs_promises.open(path.join(bundlePath, 'scene.json'), 'w')
     try {
@@ -55,6 +60,7 @@ export class ScenarioServiceImpl implements ScenarioService {
     } finally {
       await fs_promises.close(fd)
     }
+    */
   }
 
   async syncScene(scene: Scene): Promise<void> {
