@@ -15,12 +15,19 @@ import * as noice from 'noice-json-rpc-extendscript'
 import {ns} from './namespace'
 import {HostEndpoint} from './rpc/endpoint'
 import * as plugPlug from './externobject/plugPlug'
+import * as xmp from './externobject/xmp'
 import {Bridge} from '../shared'
 
 // Load the PlugPlug plugin for messaging
 if (!ns.plugPlugObject) {
   ns.plugPlugObject = new plugPlug.PlugPlugExternalObject('io.github.atty303.vo-drame')
-  console.log("PlugPlugExternalObject was loaded")
+  console.log('PlugPlugExternalObject was loaded')
+}
+
+// Load the AdobeXMPScript plugin
+if (!ns.xmpObject) {
+  ns.xmpObject = new xmp.AdobeXMPScript()
+  console.log('AdobeXMPScript was loaded')
 }
 
 // Create host-side endpoint of the rpc server
@@ -38,7 +45,8 @@ import * as service from './service'
 
 const srv = new service.PremiereService(
   new service.HelperService(),
-  new service.ProjectService()
+  new service.ProjectService(),
+  new service.SequenceService()
 )
 
 srv.expose(server.expose.bind(server))

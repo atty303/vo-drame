@@ -1,6 +1,6 @@
-import {Maybe} from 'tsmonad'
 import {Premiere} from '../../shared'
 import {ExposeFn} from './type'
+import {find} from './util'
 
 function nativeToLocal(project: Project): Premiere.Project {
   return {
@@ -17,11 +17,24 @@ function findProject(id: Premiere.ProjectId): Project | undefined {
   }
 }
 
+const assetBinName = 'vo:Drame Assets'
+
+function ensureAssetBin(project: Project): ProjectItem {
+  let bin = find(project.rootItem.children, (item: ProjectItem) => item.name === assetBinName)
+  if (!bin) {
+    project.rootItem.createBin(assetBinName)
+    bin = find(project.rootItem.children, (item: ProjectItem) => item.name === assetBinName)
+    if (!bin) throw new Error(`Couldn't create bin: ${assetBinName}`)
+  }
+  return bin
+}
+
 export class ProjectService implements Premiere.ProjectApi {
   expose(f: ExposeFn): void {
     f('currentProject', this.currentProject)
     f('getSequences', this.getSequences)
     f('importMedia', this.importMedia)
+    f('importSpeechFiles', this.importSpeechFiles)
   }
 
   currentProject(): Premiere.Project {
@@ -40,6 +53,7 @@ export class ProjectService implements Premiere.ProjectApi {
       for (let i = 0; i < p.sequences.numSequences; ++i) {
         const s: Sequence = (p.sequences as any)[i]
         sequences.push({
+          projectId: p.documentID,
           id: s.id,
           sequenceId: s.sequenceID as Premiere.SequenceId,
           name: s.name,
@@ -47,6 +61,14 @@ export class ProjectService implements Premiere.ProjectApi {
       }
     }
     return sequences
+  }
+
+  importSpeechFiles(params: { id: Premiere.ProjectId, files: string[] }): void {
+    const p = findProject(params.id)
+    if (!p) throw new Error(`Project not found: ${params.id}`)
+
+    let bin = ensureAssetBin(p)
+    p.importFiles(params.files, true, bin as any, false)
   }
 
   importMedia(params: { id: Premiere.ProjectId, files: string[], targetBin?: any }): boolean {

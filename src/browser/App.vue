@@ -2,29 +2,28 @@
   <q-layout view="hHh Lpr lFf" :style="appStyle">
     <q-header>
       <q-toolbar class="" style="min-height: 30px">
-        <span class="q-mr-xs">シーケンス</span>
-        <sequence-select v-model="selectedSequenceId"></sequence-select>
-        <q-separator vertical inset dark class="q-mx-sm"></q-separator>
-        <q-space></q-space>
+        <span>シーケンス</span>
+        <sequence-select v-model="selectedSequenceId" class="q-mx-xs"></sequence-select>
         <q-btn label="同期" icon="sync" size="xs" flat dense
           :loading="isSyncing"
           :disable="!canSync"
           @click="onSync"
         ></q-btn>
+        <q-separator vertical inset dark class="q-mx-sm"></q-separator>
+        <q-space></q-space>
         <q-btn label="再読み込み" icon="reload" size="xs" flat dense @click="onRefresh"></q-btn>
       </q-toolbar>
     </q-header>
     <q-page-container>
       <q-page padding>
         <script-table :initialScene="scene" @sceneChanged="onSceneChanged"></script-table>
-        <debug></debug>
       </q-page>
     </q-page-container>
   </q-layout>
 </template>
 
 <script lang="ts">
-import {Component, Vue, Inject} from 'vue-property-decorator'
+import {Component, Vue, Inject, Watch} from 'vue-property-decorator'
 import Debug from './components/Debug.vue'
 import ScriptTable from './components/ScriptTable.vue'
 import {Scene} from './domain'
@@ -33,6 +32,10 @@ import {csi} from './cse'
 import {colors} from 'quasar'
 import SequenceSelect from './components/SequenceSelect.vue'
 import { Premiere } from '../shared';
+
+function uiColorToCss(c: any): string {
+  return `rgba(${Math.floor(c.red)},${Math.floor(c.green)},${Math.floor(c.blue)},${c.alpha / 255})`
+}
 
 @Component({
   components: {
@@ -51,7 +54,7 @@ export default class App extends Vue {
 
   get appStyle(): string {
     const skin = csi.getHostEnvironment().appSkinInfo
-    const bgColor = this.uiColorToCss(skin.panelBackgroundColor.color)
+    const bgColor = uiColorToCss(skin.panelBackgroundColor.color)
     return `font-family: '${skin.baseFontFamily}'; font-size: ${skin.baseFontSize}px; background-color: ${bgColor}`
   }
 
@@ -59,17 +62,23 @@ export default class App extends Vue {
     return this.selectedSequenceId.length > 0
   }
 
+  constructor() {
+    super()
+    const id = localStorage.getItem('selectedSequenceId')
+    if (id) this.selectedSequenceId = id
+  }
+
   async created() {
     const skin = csi.getHostEnvironment().appSkinInfo
-    console.log(skin.systemHighlightColor)
-    colors.setBrand('primary', this.uiColorToCss(skin.systemHighlightColor))
-    colors.setBrand('secondary', this.uiColorToCss(skin.appBarBackgroundColor.color))
+    colors.setBrand('primary', uiColorToCss(skin.systemHighlightColor))
+    colors.setBrand('secondary', uiColorToCss(skin.appBarBackgroundColor.color))
 
     this.scene = await this.scenarioService.loadScene()
   }
 
-  private uiColorToCss(c: any): string {
-    return `rgba(${Math.floor(c.red)},${Math.floor(c.green)},${Math.floor(c.blue)},${c.alpha / 255})`
+  @Watch('selectedSequenceId')
+  onSelectedSequenceIdChanged(): void {
+    localStorage.setItem('selectedSequenceId', this.selectedSequenceId)
   }
 
   onRefresh(): void {
@@ -77,7 +86,6 @@ export default class App extends Vue {
   }
 
   onSceneChanged(scene: Scene): void {
-    console.log('onSceneChanged', scene)
     this.scene = scene
   }
 

@@ -65,7 +65,7 @@ export default class ScriptTable extends Vue {
   }
 
   afterChange(change: Array<any>, source: string) {
-    console.log('afterChange', change, source)
+    //console.log('afterChange', change, source)
     if (source === 'loadData') {
       return
     } else if (source == 'edit') {

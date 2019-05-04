@@ -21,6 +21,18 @@ export class ScenarioServiceImpl implements ScenarioService {
   }
 
   async loadScene(): Promise<Scene | undefined> {
+    const xmlString = await this.api.sequence.getScene({id: '88ada2ab-134f-41c8-b625-5cf7b7bff811'})
+    if (xmlString) {
+      const parser = new DOMParser()
+      const xml = parser.parseFromString(xmlString as any, 'text/xml')
+      const node = xml.querySelector('VoDrameScene')
+      if (node) {
+        const a = node.textContent
+        if (a) {
+          console.log(JSON.parse(a))
+        }
+      }
+    }
     const bundlePath = await this.ensureBundlePath()
     try {
       const json = await fs_promises.readFile(path.join(bundlePath, 'scene.json'), 'utf-8')
@@ -30,10 +42,10 @@ export class ScenarioServiceImpl implements ScenarioService {
       console.error(`couldn't load scene`, e)
       return
     }
-
   }
 
   async saveScene(scene: Scene): Promise<void> {
+    await this.api.sequence.setScene({id: '88ada2ab-134f-41c8-b625-5cf7b7bff811', value: JSON.stringify(scene)})
     const bundlePath = await this.ensureBundlePath()
     const fd = await fs_promises.open(path.join(bundlePath, 'scene.json'), 'w')
     try {
@@ -58,7 +70,7 @@ export class ScenarioServiceImpl implements ScenarioService {
     const speechFiles = await Promise.all(ps)
     console.log(speechFiles)
 
-    this.api.project.importMedia({id: p.id, files: speechFiles.map(f => f.path)})
+    this.api.project.importSpeechFiles({id: p.id, files: speechFiles.map(f => f.path)})
 
     let startAt = 0
     speechFiles.forEach((file) => {
