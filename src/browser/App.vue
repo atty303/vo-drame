@@ -16,6 +16,7 @@
     </q-header>
     <q-page-container>
       <q-page padding>
+        <scene-table :initialScene="scene"></scene-table>
         <script-table :initialScene="scene" @sceneChanged="onSceneChanged"></script-table>
       </q-page>
     </q-page-container>
@@ -25,6 +26,7 @@
 <script lang="ts">
 import {Component, Vue, Inject, Watch} from 'vue-property-decorator'
 import Debug from './components/Debug.vue'
+import SceneTable from './components/SceneTable.vue'
 import ScriptTable from './components/ScriptTable.vue'
 import {Scene} from './domain'
 import * as service from './service'
@@ -42,6 +44,7 @@ function uiColorToCss(c: any): string {
     Debug,
     ScriptTable,
     SequenceSelect,
+    SceneTable,
   }
 })
 export default class App extends Vue {
