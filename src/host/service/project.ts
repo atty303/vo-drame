@@ -17,6 +17,11 @@ function findProject(id: Premiere.ProjectId): Project | undefined {
   }
 }
 
+// FIXME: MacOS seperator
+function extractFilename(path: string): string {
+  return path.slice(path.lastIndexOf('\\') + 1)
+}
+
 const assetBinName = 'vo:Drame Assets'
 
 function ensureAssetBin(project: Project): ProjectItem {
@@ -63,12 +68,46 @@ export class ProjectService implements Premiere.ProjectApi {
     return sequences
   }
 
-  importSpeechFiles(params: { id: Premiere.ProjectId, files: string[] }): void {
+  getFiles(params: { id: Premiere.ProjectId }) {
+    const p = findProject(params.id)
+    const files = []
+    if (p) {
+      let bin = ensureAssetBin(p)
+      for (let i = 0; i < bin.children.numItems; ++i) {
+        const item: ProjectItem = (bin.children as any)[i]
+        if (item.type === 4) { // ProjectItemType.FILE
+          files.push({
+            id: item.nodeId,
+            name: item.name,
+          })
+        }
+      }
+    }
+    return files
+  }
+
+  findItem(params: { id: Premiere.ProjectId }) {
+
+  }
+
+  importSpeechFiles(params: { id: Premiere.ProjectId, files: Premiere.SpeechFile[] }): void {
     const p = findProject(params.id)
     if (!p) throw new Error(`Project not found: ${params.id}`)
 
+    const paths = params.files.map(f => f.path)
     let bin = ensureAssetBin(p)
-    p.importFiles(params.files, true, bin as any, false)
+    p.importFiles(paths, true, bin as any, false)
+
+    // rename project items
+    params.files.forEach(file => {
+      const filename = extractFilename(file.path)
+      const matched = find(bin.children, (i: ProjectItem) => {
+        return extractFilename(i.getMediaPath()) === filename
+      })
+      if (matched) {
+        matched.name = file.name
+      }
+    })
   }
 
   importMedia(params: { id: Premiere.ProjectId, files: string[], targetBin?: any }): boolean {

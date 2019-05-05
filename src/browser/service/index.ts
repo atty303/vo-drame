@@ -45,15 +45,20 @@ export class ScenarioServiceImpl implements ScenarioService {
     const p = await this.api.project.currentProject()
     const bundlePath = await this.ensureBundlePath()
 
+    const dialogues = scene.dialogues.filter(v => v.text.length > 0)
+
     // render speechs
-    const ps = scene.dialogues.map(async (dialogue) => {
+    const ps = dialogues.map(async (dialogue) => {
       const res = await axios.post('https://vom303.ap.ngrok.io', dialogue.text, {responseType: 'arraybuffer'})
-      const filePath = path.join(bundlePath, dialogue.text + '.wav')
-      return await this.speechFileAdapter.write(filePath, Buffer.from(res.data))
+      const filePath = path.join(bundlePath, dialogue.id + '.wav')
+      return {
+        ...await this.speechFileAdapter.write(filePath, Buffer.from(res.data)),
+        name: dialogue.text,
+      }
     })
     const speechFiles = await Promise.all(ps)
 
-    this.api.project.importSpeechFiles({id: p.id, files: speechFiles.map(f => f.path)})
+    this.api.project.importSpeechFiles({id: p.id, files: speechFiles})
 
     let startAt = 0
     speechFiles.forEach((file) => {
@@ -64,7 +69,7 @@ export class ScenarioServiceImpl implements ScenarioService {
       startAt += file.duration + 1
     })
 
-    
+
   }
 
   async getSequences(): Promise<Premiere.Sequence[]> {

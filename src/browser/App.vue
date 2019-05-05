@@ -16,7 +16,6 @@
     </q-header>
     <q-page-container>
       <q-page padding>
-        <scene-table :initialScene="scene"></scene-table>
         <script-table :initialScene="scene" @sceneChanged="onSceneChanged"></script-table>
       </q-page>
     </q-page-container>
@@ -91,6 +90,7 @@ export default class App extends Vue {
   }
 
   onSceneChanged(scene: Scene): void {
+    console.log('app:onSceneChanged', scene)
     this.scene = scene
     if (this.selectedSequenceId) {
       this.scenarioService.saveScene(this.selectedSequenceId, this.scene)

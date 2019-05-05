@@ -25,17 +25,17 @@ export default class ScriptTable extends Vue {
   @Inject('scenarioService')
   private scenarioService!: service.ScenarioService
 
-  @Prop({default: new Scene()})
+  @Prop({default: () => new Scene()})
   initialScene!: Scene
 
   readonly hotSettings = {
     rowHeaders: true,
-    colHeaders: ['ID', 'Text'],
+    colHeaders: ['ID', '台詞'],
     filters: true,
     contextMenu: true,
     dropdownMenu: true,
     //minSpareRows: 1,
-    schema: Dialogue,
+    dataSchema: () => new Dialogue(),
     columns: [
       {data: 'id'},
       {data: 'text'},
@@ -51,25 +51,21 @@ export default class ScriptTable extends Vue {
     return (this.$refs.hot as any).hotInstance
   }
 
-  get scene(): Scene {
+  //@Emit()
+  sceneChanged(): Scene {
     const scene = new Scene()
+    console.log(this.hot.getSourceData())
     scene.dialogues = this.hot.getSourceData() as any
+    console.log('sceneChanged', scene)
+    this.$emit('sceneChanged', scene)
     return scene
   }
 
-  async mounted() {
-  }
-
-  @Emit()
-  sceneChanged(): Scene {
-    return this.scene
-  }
-
   afterChange(change: Array<any>, source: string) {
-    //console.log('afterChange', change, source)
+    console.log('afterChange', change, source)
     if (source === 'loadData') {
       return
-    } else if (source == 'edit') {
+    } else if (source === 'edit') {
       const [row, prop, oldValue, newValue] = change
       this.sceneChanged()
     }

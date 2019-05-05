@@ -24,12 +24,17 @@ export namespace Premiere {
     Boolean = 3,
   }
 
+  export interface SpeechFile {
+    path: string
+    name: string
+  }
+
   export interface ProjectApi {
     currentProject(): Project
     getProjectById(id: Premiere.ProjectId): Premiere.Project | undefined
     getSequences(params: { id: Premiere.ProjectId }): Premiere.Sequence[]
     importMedia(params: { id: ProjectId, files: string[], targetBin?: any }): boolean
-    importSpeechFiles(params: { id: Premiere.ProjectId, files: string[] }): void
+    importSpeechFiles(params: { id: Premiere.ProjectId, files: SpeechFile[] }): void
   }
 
   export type SequenceId = string
