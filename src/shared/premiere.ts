@@ -17,24 +17,27 @@ export namespace Premiere {
     path: string
   }
 
-  export enum MetadataType {
-    Integer = 0,
-    Real = 1,
-    String = 2,
-    Boolean = 3,
+  export enum ImportAction {
+    Ignore,
+    Import,
+    Refresh,
   }
 
-  export interface SpeechFile {
+  export interface AssetFile {
     path: string
     name: string
   }
 
+  export interface ImportingAssetFile extends AssetFile {
+    action: ImportAction
+  }
+
   export interface ProjectApi {
-    currentProject(): Project
-    getProjectById(id: Premiere.ProjectId): Premiere.Project | undefined
+    currentProjectId(): ProjectId
+    getProjectById(id: Premiere.ProjectId): Premiere.Project
     getSequences(params: { id: Premiere.ProjectId }): Premiere.Sequence[]
-    importMedia(params: { id: ProjectId, files: string[], targetBin?: any }): boolean
-    importSpeechFiles(params: { id: Premiere.ProjectId, files: SpeechFile[] }): void
+    getAssetFiles(params: { id: Premiere.ProjectId }): Premiere.AssetFile[]
+    importAssetFiles(params: { id: Premiere.ProjectId, files: ImportingAssetFile[] }): void
   }
 
   export type SequenceId = string

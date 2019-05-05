@@ -9,6 +9,7 @@ export function find<T, U>(arrayLike: T, predicate: (v: U) => boolean): U | unde
   let count = 0
   if ((arrayLike as any).numItems > 0) count = (arrayLike as any).numItems
   if ((arrayLike as any).numSequences > 0) count = (arrayLike as any).numSequences
+  if ((arrayLike as any).numProjects > 0) count = (arrayLike as any).numProjects
 
   for (let i = 0; i < count; ++i) {
     const value = (arrayLike as any)[i]

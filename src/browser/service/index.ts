@@ -42,23 +42,38 @@ export class ScenarioServiceImpl implements ScenarioService {
   }
 
   async syncScene(sequenceId: Premiere.SequenceId, scene: Scene): Promise<void> {
-    const p = await this.api.project.currentProject()
+    const projectId = await this.api.project.currentProjectId()
     const bundlePath = await this.ensureBundlePath()
 
-    const dialogues = scene.dialogues.filter(v => v.text.length > 0)
+    const assets = await this.api.project.getAssetFiles({id: projectId})
+
+    const actions = scene.dialogues.map(dialogue => {
+      if (dialogue.text.length === 0) return { action: Premiere.ImportAction.Ignore, ...dialogue }
+      const asset = assets.find(a => a.path.indexOf(dialogue.id) >= 0)
+      if (asset) {
+        const action = (asset.name !== dialogue.text) ? Premiere.ImportAction.Refresh : Premiere.ImportAction.Ignore
+        return { action, ...dialogue }
+      }
+      return { action: Premiere.ImportAction.Import, ...dialogue }
+    })
+
+    const updatedAssets = actions.filter(s => s.action !== Premiere.ImportAction.Ignore)
 
     // render speechs
-    const ps = dialogues.map(async (dialogue) => {
+    const ps = updatedAssets.map(async (dialogue) => {
       const res = await axios.post('https://vom303.ap.ngrok.io', dialogue.text, {responseType: 'arraybuffer'})
       const filePath = path.join(bundlePath, dialogue.id + '.wav')
       return {
         ...await this.speechFileAdapter.write(filePath, Buffer.from(res.data)),
         name: dialogue.text,
-      }
+        action: dialogue.action,
+       }
     })
     const speechFiles = await Promise.all(ps)
 
-    this.api.project.importSpeechFiles({id: p.id, files: speechFiles})
+    if (speechFiles.length > 0) {
+      this.api.project.importAssetFiles({id: projectId, files: speechFiles})
+    }
 
     let startAt = 0
     speechFiles.forEach((file) => {
@@ -73,12 +88,13 @@ export class ScenarioServiceImpl implements ScenarioService {
   }
 
   async getSequences(): Promise<Premiere.Sequence[]> {
-    const p = await this.api.project.currentProject()
-    return this.api.project.getSequences({id: p.id})
+    const id = await this.api.project.currentProjectId()
+    return this.api.project.getSequences({id})
   }
 
   private async ensureBundlePath(): Promise<string> {
-    const p = await this.api.project.currentProject()
+    const projectId = await this.api.project.currentProjectId()
+    const p = await this.api.project.getProjectById(projectId)
     const bundlePath = p.path.slice(0, p.path.lastIndexOf('.')) + '.drame'
     if (!(await fs_promises.exists(bundlePath))) {
       await fs_promises.mkdir(bundlePath)
