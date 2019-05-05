@@ -1,8 +1,6 @@
 import {Premiere} from '../../shared'
 import {ExposeFn} from './type'
-import {find} from './util'
-
-const assetBinName = 'vo:Drame Assets'
+import {find, findAssetFileByPath, ensureAssetBin} from './util'
 
 function findProject(id: Premiere.ProjectId): Project {
   const p = find(app.projects, (i: Project) => i.documentID == id)
@@ -11,28 +9,6 @@ function findProject(id: Premiere.ProjectId): Project {
   } else {
     throw new Error(`Project not found: ${id}`)
   }
-}
-
-// FIXME: MacOS seperator
-function extractFilename(path: string): string {
-  return path.slice(path.lastIndexOf('\\') + 1)
-}
-
-function findAssetFileByPath(bin: ProjectItem, path: string): ProjectItem | undefined {
-  const filename = extractFilename(path)
-  return find(bin.children, (i: ProjectItem) => {
-    return extractFilename(i.getMediaPath()) === filename
-  })
-}
-
-function ensureAssetBin(project: Project): ProjectItem {
-  let bin = find(project.rootItem.children, (item: ProjectItem) => item.name === assetBinName)
-  if (!bin) {
-    project.rootItem.createBin(assetBinName)
-    bin = find(project.rootItem.children, (item: ProjectItem) => item.name === assetBinName)
-    if (!bin) throw new Error(`Couldn't create bin: ${assetBinName}`)
-  }
-  return bin
 }
 
 export class ProjectService implements Premiere.ProjectApi {
@@ -108,6 +84,7 @@ export class ProjectService implements Premiere.ProjectApi {
         const item = findAssetFileByPath(bin, file.path)
         if (item) {
           item.refreshMedia()
+          ;(item as any).clearOutPoint()
         }
       })
     }

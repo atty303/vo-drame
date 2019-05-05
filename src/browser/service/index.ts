@@ -47,6 +47,7 @@ export class ScenarioServiceImpl implements ScenarioService {
 
     const assets = await this.api.project.getAssetFiles({id: projectId})
 
+    // map import actions
     const actions = scene.dialogues.map(dialogue => {
       if (dialogue.text.length === 0) return { action: Premiere.ImportAction.Ignore, ...dialogue }
       const asset = assets.find(a => a.path.indexOf(dialogue.id) >= 0)
@@ -71,20 +72,28 @@ export class ScenarioServiceImpl implements ScenarioService {
     })
     const speechFiles = await Promise.all(ps)
 
+    // import assets
     if (speechFiles.length > 0) {
       this.api.project.importAssetFiles({id: projectId, files: speechFiles})
     }
 
+    // read all speech durations
     let startAt = 0
-    speechFiles.forEach((file) => {
+    const clips = await Promise.all(scene.dialogues.map(async dialogue => {
+      const filePath = path.join(bundlePath, dialogue.id + '.wav')
+      const speechFile = await this.speechFileAdapter.read(filePath)
+
       const r = {
-        ...file,
-        startAt: startAt
+        id: dialogue.id,
+        path: speechFile.path,
+        duration: speechFile.duration,
+        startAt
       }
-      startAt += file.duration + 1
-    })
+      startAt += speechFile.duration + 1
+      return r
+    }))
 
-
+    this.api.sequence.syncClips({id: sequenceId, clips})
   }
 
   async getSequences(): Promise<Premiere.Sequence[]> {

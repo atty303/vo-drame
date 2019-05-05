@@ -1,8 +1,5 @@
-export function forEach<T, U>(arrayLike: T, countFn: (v: T) => number, cb: (v: U, i: number) => void) {
-  const count = countFn(arrayLike)
-  for (let i = 0; i < count; ++i) {
-    cb((arrayLike as any)[i], i)
-  }
+declare var Folder: {
+  fs: string
 }
 
 export function find<T, U>(arrayLike: T, predicate: (v: U) => boolean): U | undefined {
@@ -15,4 +12,28 @@ export function find<T, U>(arrayLike: T, predicate: (v: U) => boolean): U | unde
     const value = (arrayLike as any)[i]
     if (predicate(value)) return value
   }
+}
+
+function extractFilename(path: string): string {
+  const sep = (Folder.fs === 'Macintosh') ? '/' : '\\'
+  return path.slice(path.lastIndexOf(sep) + 1)
+}
+
+export function findAssetFileByPath(bin: ProjectItem, path: string): ProjectItem | undefined {
+  const filename = extractFilename(path)
+  return find(bin.children, (i: ProjectItem) => {
+    return extractFilename(i.getMediaPath()) === filename
+  })
+}
+
+const assetBinName = 'vo:Drame Assets'
+
+export function ensureAssetBin(project: Project): ProjectItem {
+  let bin = find(project.rootItem.children, (item: ProjectItem) => item.name === assetBinName)
+  if (!bin) {
+    project.rootItem.createBin(assetBinName)
+    bin = find(project.rootItem.children, (item: ProjectItem) => item.name === assetBinName)
+    if (!bin) throw new Error(`Couldn't create bin: ${assetBinName}`)
+  }
+  return bin
 }

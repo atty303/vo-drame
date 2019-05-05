@@ -49,8 +49,16 @@ export namespace Premiere {
     name: string
   }
 
+  export interface SyncingClip {
+    id: string
+    path: string
+    duration: number
+    startAt: number
+  }
+
   export interface SequenceApi {
     setScene(params: {id: Premiere.SequenceId, value: string}): void
     getScene(params: {id: Premiere.SequenceId}): string | undefined
+    syncClips(params: {id: Premiere.SequenceId, clips: SyncingClip[]}): void
   }
 }
