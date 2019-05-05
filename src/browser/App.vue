@@ -95,11 +95,11 @@ export default class App extends Vue {
   }
 
   async onSync(): Promise<void> {
-    if (this.isSyncing) {
+    if (this.isSyncing || !this.selectedSequenceId) {
       return
     }
     this.isSyncing = true
-    await this.scenarioService.syncScene(this.scene)
+    await this.scenarioService.syncScene(this.selectedSequenceId, this.scene)
     this.isSyncing = false
   }
 }

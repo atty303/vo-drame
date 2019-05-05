@@ -9,8 +9,8 @@ export * from './SpeechFile'
 
 export interface ScenarioService {
   loadScene(sequenceId: Premiere.SequenceId): Promise<Scene | undefined>
-  saveScene(sequenceId: Premiere.SequenceId,  scene: Scene): Promise<void>
-  syncScene(scene: Scene): Promise<void>
+  saveScene(sequenceId: Premiere.SequenceId, scene: Scene): Promise<void>
+  syncScene(sequenceId: Premiere.SequenceId, scene: Scene): Promise<void>
   getSequences(): Promise<Premiere.Sequence[]>
 }
 
@@ -35,35 +35,13 @@ export class ScenarioServiceImpl implements ScenarioService {
       }
     }
     return scene
-    /*
-    const bundlePath = await this.ensureBundlePath()
-    try {
-      const json = await fs_promises.readFile(path.join(bundlePath, 'scene.json'), 'utf-8')
-      const scene = JSON.parse(json as string)
-      return scene
-    } catch (e) {
-      console.error(`couldn't load scene`, e)
-      return
-    }
-    */
   }
 
   async saveScene(sequenceId: Premiere.SequenceId,  scene: Scene): Promise<void> {
     await this.api.sequence.setScene({id: sequenceId, value: JSON.stringify(scene)})
-    /*
-    const bundlePath = await this.ensureBundlePath()
-    const fd = await fs_promises.open(path.join(bundlePath, 'scene.json'), 'w')
-    try {
-      await fs_promises.write(fd, JSON.stringify(scene))
-    } catch (e) {
-      throw e
-    } finally {
-      await fs_promises.close(fd)
-    }
-    */
   }
 
-  async syncScene(scene: Scene): Promise<void> {
+  async syncScene(sequenceId: Premiere.SequenceId, scene: Scene): Promise<void> {
     const p = await this.api.project.currentProject()
     const bundlePath = await this.ensureBundlePath()
 
@@ -74,7 +52,6 @@ export class ScenarioServiceImpl implements ScenarioService {
       return await this.speechFileAdapter.write(filePath, Buffer.from(res.data))
     })
     const speechFiles = await Promise.all(ps)
-    console.log(speechFiles)
 
     this.api.project.importSpeechFiles({id: p.id, files: speechFiles.map(f => f.path)})
 
@@ -86,6 +63,8 @@ export class ScenarioServiceImpl implements ScenarioService {
       }
       startAt += file.duration + 1
     })
+
+    
   }
 
   async getSequences(): Promise<Premiere.Sequence[]> {

@@ -44,6 +44,16 @@ export class SequenceService implements Premiere.SequenceApi {
     }
   }
 
+  sync(params: {id: Premiere.SequenceId}) {
+    const s = find(app.project.sequences, (v: Sequence) => v.sequenceID === params.id) // TODO: multi project
+    if (!s) return
+
+    const audioTrack = s.audioTracks[0]
+    if (!audioTrack) return
+
+    //audioTrack.insertClip()
+  }
+
   private ensureSceneMetadata(): void {
     const p = app.project // TODO: multiple project
     p.addPropertyToProjectMetadataSchema(scenePropertyName, 'vo:Drame Scene JSON', Premiere.MetadataType.String)
