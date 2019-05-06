@@ -23,16 +23,16 @@ const kPProPrivateProjectMetadataURI = 'http://ns.adobe.com/premierePrivateProje
 const scenePropertyName = 'VoDrameScene'
 const mogrtBinName = "mogrt"
 
-function findClipByName(bin: ProjectItem, name: string) {
-  return find(bin.children, (i: ProjectItem) => i.name === name)
-}
-
 function findMogrt(name: string): ProjectItem | undefined {
   // TODO: multi project
   const bin = find(app.project.rootItem.children, (i: ProjectItem) => i.name === mogrtBinName)
   if (bin) {
-    return findClipByName(bin, name)
+    return find(bin.children, (i: ProjectItem) => i.name === name)
   }
+}
+
+function findTrackItemByName(track: Track, name: string) {
+  return find(track.clips, (i: TrackItem) => i.name === name)
 }
 
 export class SequenceService implements Premiere.SequenceApi {
@@ -72,9 +72,17 @@ export class SequenceService implements Premiere.SequenceApi {
     const audioTrack = s.audioTracks[0]
     if (!audioTrack) throw new Error(`Sequence ${params.id} hasn't audio tracks`)
 
+    const videoTrack = s.videoTracks[0]
+    if (!videoTrack) throw new Error(`Sequence ${params.id} hasn't video tracks`)
+
     // remove all clips
     for (let i = audioTrack.clips.numItems - 1; i >= 0; i--) {
       const clip = audioTrack.clips[i]
+      ;(clip as any).remove(false)
+    }
+
+    for (let i = videoTrack.clips.numItems - 1; i >= 0; i--) {
+      const clip = videoTrack.clips[i]
       ;(clip as any).remove(false)
     }
 
@@ -84,6 +92,7 @@ export class SequenceService implements Premiere.SequenceApi {
       const asset = findAssetFileByPath(bin, clip.path)
       if (asset) {
         audioTrack.overwriteClip(asset, clip.startAt)
+
         const placedClip = audioTrack.clips[i]
         const endTime = new Time()
         endTime.seconds =  placedClip.start.seconds + clip.duration
@@ -95,14 +104,6 @@ export class SequenceService implements Premiere.SequenceApi {
     if (!subtitle) throw new Error('Subtitle was not found')
 
     ;(subtitle as any).setOutPoint(0.1)
-
-    const videoTrack = s.videoTracks[0]
-    if (!videoTrack) throw new Error(`Sequence ${params.id} hasn't video tracks`)
-
-    for (let i = videoTrack.clips.numItems - 1; i >= 0; i--) {
-      const clip = videoTrack.clips[i]
-      ;(clip as any).remove(false)
-    }
 
     params.clips.forEach((clip, i) => {
       videoTrack.overwriteClip(subtitle, clip.startAt)

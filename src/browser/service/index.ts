@@ -80,7 +80,9 @@ export class ScenarioServiceImpl implements ScenarioService {
     // read all speech durations
     const syncingAssets = scene.dialogues.filter(d => d.text.length > 0)
     let startAt = 0
-    const clips = await Promise.all(syncingAssets.map(async dialogue => {
+    const clips: Premiere.SyncingClip[] = []
+    for (let i = 0; i < syncingAssets.length; ++i) {
+      const dialogue = syncingAssets[i]
       const filePath = path.join(bundlePath, dialogue.id + '.wav')
       const speechFile = await this.speechFileAdapter.read(filePath)
 
@@ -92,8 +94,8 @@ export class ScenarioServiceImpl implements ScenarioService {
         subtitle: dialogue.text,
       }
       startAt += speechFile.duration + 0.5
-      return r
-    }))
+      clips.push(r)
+    }
 
     this.api.sequence.syncClips({id: sequenceId, clips})
   }
