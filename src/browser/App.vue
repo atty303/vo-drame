@@ -22,6 +22,7 @@
     <q-page-container>
       <q-page padding>
         <script-table :initialScene="scene" @sceneChanged="onSceneChanged"></script-table>
+        <!--scene-table :scene="scene" @sceneChanged="onSceneChanged"></scene-table-->
       </q-page>
     </q-page-container>
   </q-layout>
