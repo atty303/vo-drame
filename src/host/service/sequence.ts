@@ -72,17 +72,10 @@ export class SequenceService implements Premiere.SequenceApi {
     const audioTrack = s.audioTracks[0]
     if (!audioTrack) throw new Error(`Sequence ${params.id} hasn't audio tracks`)
 
-    const videoTrack = s.videoTracks[0]
-    if (!videoTrack) throw new Error(`Sequence ${params.id} hasn't video tracks`)
-
     // remove all clips
     for (let i = audioTrack.clips.numItems - 1; i >= 0; i--) {
       const clip = audioTrack.clips[i]
-      ;(clip as any).remove(true)
-    }
-    for (let i = videoTrack.clips.numItems - 1; i >= 0; i--) {
-      const clip = videoTrack.clips[i]
-      ;(clip as any).remove(true)
+      ;(clip as any).remove(false)
     }
 
     const bin = ensureAssetBin(app.project) // FIXME: multiple project
@@ -102,6 +95,14 @@ export class SequenceService implements Premiere.SequenceApi {
     if (!subtitle) throw new Error('Subtitle was not found')
 
     ;(subtitle as any).setOutPoint(0.1)
+
+    const videoTrack = s.videoTracks[0]
+    if (!videoTrack) throw new Error(`Sequence ${params.id} hasn't video tracks`)
+
+    for (let i = videoTrack.clips.numItems - 1; i >= 0; i--) {
+      const clip = videoTrack.clips[i]
+      ;(clip as any).remove(false)
+    }
 
     params.clips.forEach((clip, i) => {
       videoTrack.overwriteClip(subtitle, clip.startAt)

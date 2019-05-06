@@ -67,7 +67,10 @@ export default class ScriptTable extends Vue {
         'filter_action_bar': {},
       }
     },
-    afterChange: this.afterChange.bind(this),
+    afterChange: this.onAfterChange.bind(this),
+    afterCreateRow: () => this.sceneChanged(),
+    afterRemoveRow: () => this.sceneChanged(),
+    afterRowMove: () => this.sceneChanged(),
   }
 
   get initialData() {
@@ -78,22 +81,17 @@ export default class ScriptTable extends Vue {
     return this.initialScene.nonEmpty
   }
 
-  get hot(): Handsontable {
-    return (this.$refs.hot as any).hotInstance
-  }
-
   //@Emit()
   sceneChanged(): Scene {
-    const scene = new Scene()
-    console.log(this.hot.getSourceData())
-    scene.dialogues = this.hot.getSourceData() as any
-    console.log('sceneChanged', scene)
+    const hot = (this.$refs.hot as any).hotInstance
+    const dialogues = hot.getData().map(arr => new Dialogue({id: arr[0], text: arr[1]}))
+    const scene = new Scene({ dialogues })
     this.$emit('sceneChanged', scene)
     return scene
   }
 
-  afterChange(change: Array<any>, source: string) {
-    console.log('afterChange', change, source)
+  onAfterChange(change: Array<any>, source: string) {
+    // console.log('afterChange', change, source)
     if (source === 'loadData') {
       return
     } else if (source === 'edit') {

@@ -4,14 +4,19 @@
       <q-toolbar class="" style="min-height: 30px">
         <span>シーケンス</span>
         <sequence-select v-model="selectedSequenceId" class="q-mx-xs"></sequence-select>
+        <q-btn label="新規作成" icon="add" size="xs" flat dense
+          v-if="canAdd"
+          @click="onAdd"
+        ></q-btn>
         <q-btn label="同期" icon="sync" size="xs" flat dense
+          v-if="!canAdd"
           :loading="isSyncing"
           :disable="!canSync"
           @click="onSync"
         ></q-btn>
         <q-separator vertical inset dark class="q-mx-sm"></q-separator>
         <q-space></q-space>
-        <q-btn label="再読み込み" icon="reload" size="xs" flat dense @click="onRefresh"></q-btn>
+        <q-btn label="再読み込み" icon="build" size="xs" flat dense @click="onRefresh"></q-btn>
       </q-toolbar>
     </q-header>
     <q-page-container>
@@ -50,7 +55,7 @@ export default class App extends Vue {
   @Inject('scenarioService')
   private scenarioService!: service.ScenarioService
 
-  scene: Scene = new Scene()
+  scene: Scene = Scene.empty()
   isSyncing: boolean = false
   selectedSequenceId: Premiere.SequenceId = ''
 
@@ -60,8 +65,12 @@ export default class App extends Vue {
     return `font-family: '${skin.baseFontFamily}'; font-size: ${skin.baseFontSize}px; background-color: ${bgColor}`
   }
 
+  get canAdd(): boolean {
+    return this.scene.isEmpty
+  }
+
   get canSync(): boolean {
-    return this.selectedSequenceId.length > 0
+    return this.selectedSequenceId.length > 0 && this.scene.nonEmpty
   }
 
   async created() {
@@ -78,7 +87,7 @@ export default class App extends Vue {
     localStorage.setItem('selectedSequenceId', this.selectedSequenceId)
 
     if (this.selectedSequenceId) {
-      this.scene = await this.scenarioService.loadScene(this.selectedSequenceId)
+      this.scene = await this.scenarioService.loadScene(this.selectedSequenceId) || Scene.empty()
     }
   }
 
@@ -87,11 +96,14 @@ export default class App extends Vue {
   }
 
   onSceneChanged(scene: Scene): void {
-    console.log('app:onSceneChanged', scene)
     this.scene = scene
     if (this.selectedSequenceId) {
       this.scenarioService.saveScene(this.selectedSequenceId, this.scene)
     }
+  }
+
+  async onAdd(): Promise<void> {
+    this.onSceneChanged(Scene.newTemplate())
   }
 
   async onSync(): Promise<void> {

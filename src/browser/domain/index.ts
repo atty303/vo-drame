@@ -1,13 +1,9 @@
 import * as uuid from 'uuid'
 
-
 export class Dialogue {
   static empty(): Dialogue {
     return new Dialogue()
   }
-
-  id: string = uuid.v4()
-  text: string = ''
 
   constructor(p?: Dialogue) {
     if (p) {
@@ -15,10 +11,25 @@ export class Dialogue {
       this.text = p.text
     }
   }
+
+  id: string = uuid.v4()
+  text: string = ''
 }
 
 export class Scene {
-  constructor(p?: Scene) {
+  static empty(): Scene {
+    return new Scene()
+  }
+
+  static newTemplate(): Scene {
+    const dialogues: Dialogue[] = []
+    for (let i = 0; i < 10; ++i) {
+      dialogues.push(Dialogue.empty())
+    }
+    return new Scene({dialogues})
+  }
+
+  constructor(p?: { dialogues: Dialogue[] }) {
     if (p) {
       this.dialogues = p.dialogues.map(d => new Dialogue({ id: d.id, text: d.text }))
     }
@@ -26,8 +37,11 @@ export class Scene {
 
   dialogues: Dialogue[] = []
 
-  get nonEmpty(): boolean {
-    return this.dialogues.length > 0
+  get isEmpty(): boolean {
+    return this.dialogues.length === 0
   }
 
+  get nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
