@@ -1,6 +1,7 @@
 <template>
   <div>
     <hot-table
+      v-if="visible"
       ref="hot"
       :settings="hotSettings"
       :data="initialData"
@@ -31,13 +32,24 @@ export default class ScriptTable extends Vue {
   readonly hotSettings = {
     rowHeaders: true,
     colHeaders: ['ID', '台詞'],
+    colWidths: [0, '400'],
+    hiddenColumns: {
+      columns: [0],
+      indicators: false,
+    },
+    manualRowMove: true,
+    //width: '95vw',
+    height: 'calc(100vh - 50px)',
     filters: true,
     contextMenu: true,
     dropdownMenu: true,
-    //minSpareRows: 1,
-    dataSchema: () => new Dialogue(),
+    allowInsertColumn: false,
+    allowRemoveColumn: false,
+    autoWrapCol: false,
+    autoWrapRow: false,
+    dataSchema: () => Dialogue.empty(),
     columns: [
-      {data: 'id'},
+      {data: 'id', skipColumnOnPaste: true},
       {data: 'text'},
     ],
     afterChange: this.afterChange.bind(this),
@@ -45,6 +57,10 @@ export default class ScriptTable extends Vue {
 
   get initialData() {
     return this.initialScene.dialogues
+  }
+
+  get visible() {
+    return this.initialScene.nonEmpty
   }
 
   get hot(): Handsontable {

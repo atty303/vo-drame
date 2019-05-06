@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import {fs, fs_promises, path} from '../util/node'
-import {Scene} from '@/domain'
+import {Scene} from '../domain'
 import {Premiere} from '../../shared'
 import {SpeechFileAdapter, SpeechFile} from './SpeechFile'
 
@@ -30,7 +30,7 @@ export class ScenarioServiceImpl implements ScenarioService {
       if (node) {
         const a = node.textContent
         if (a) {
-          scene = JSON.parse(a)
+          scene = new Scene(JSON.parse(a))
         }
       }
     }
@@ -78,8 +78,9 @@ export class ScenarioServiceImpl implements ScenarioService {
     }
 
     // read all speech durations
+    const syncingAssets = scene.dialogues.filter(d => d.text.length > 0)
     let startAt = 0
-    const clips = await Promise.all(scene.dialogues.map(async dialogue => {
+    const clips = await Promise.all(syncingAssets.map(async dialogue => {
       const filePath = path.join(bundlePath, dialogue.id + '.wav')
       const speechFile = await this.speechFileAdapter.read(filePath)
 
