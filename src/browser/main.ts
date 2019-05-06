@@ -102,7 +102,7 @@ import {BrowserEndpoint} from './cse'
 import {Premiere} from '../shared'
 
 const endpoint = new BrowserEndpoint()
-const client = new noice.Client(endpoint, {logConsole: true})
+const client = new noice.Client(endpoint, {logConsole: false})
 const api: Premiere.Api = client.api()
 
 export const premiereApi: Premiere.Api = api

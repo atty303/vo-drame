@@ -3,15 +3,15 @@
     <hot-table
       v-if="visible"
       ref="hot"
+      :data="rows"
       :settings="hotSettings"
-      :data="initialData"
       licenseKey="non-commercial-and-evaluation"></hot-table>
   </div>
 </template>
 
 <script lang="ts">
 import {HotTable} from '@handsontable/vue'
-import {Component, Vue, Inject, Emit, Prop} from 'vue-property-decorator';
+import {Component, Vue, Inject, Emit, Prop, Watch} from 'vue-property-decorator';
 import {Scene, Dialogue} from '../domain'
 import * as service from '../service'
 import { HotTableComponent, HotTableData } from '@handsontable/vue/types';
@@ -26,8 +26,8 @@ export default class ScriptTable extends Vue {
   @Inject('scenarioService')
   private scenarioService!: service.ScenarioService
 
-  @Prop({default: () => new Scene()})
-  initialScene!: Scene
+  @Prop({default: () => Scene.empty()})
+  scene!: Scene
 
   readonly hotSettings = {
     rowHeaders: true,
@@ -37,7 +37,7 @@ export default class ScriptTable extends Vue {
       columns: [0],
       indicators: false,
     },
-    manualRowMove: true,
+    //manualRowMove: true,
     //width: '95vw',
     height: 'calc(100vh - 50px)',
     filters: true,
@@ -73,12 +73,12 @@ export default class ScriptTable extends Vue {
     afterRowMove: () => this.sceneChanged(),
   }
 
-  get initialData() {
-    return this.initialScene.dialogues
+  get rows() {
+    return this.scene.dialogues
   }
 
   get visible() {
-    return this.initialScene.nonEmpty
+    return this.scene.nonEmpty
   }
 
   //@Emit()
@@ -86,6 +86,7 @@ export default class ScriptTable extends Vue {
     const hot = (this.$refs.hot as any).hotInstance
     const dialogues = hot.getData().map(arr => new Dialogue({id: arr[0], text: arr[1]}))
     const scene = new Scene({ dialogues })
+    console.log(dialogues)
     this.$emit('sceneChanged', scene)
     return scene
   }
@@ -100,5 +101,4 @@ export default class ScriptTable extends Vue {
     }
   }
 }
-
 </script>
