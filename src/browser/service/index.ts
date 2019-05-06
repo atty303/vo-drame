@@ -93,7 +93,7 @@ export class ScenarioServiceImpl implements ScenarioService {
         startAt,
         subtitle: dialogue.text,
       }
-      startAt += speechFile.duration + 0.5
+      startAt += speechFile.duration + 1
       clips.push(r)
     }
 
