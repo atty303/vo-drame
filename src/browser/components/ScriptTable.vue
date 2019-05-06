@@ -41,8 +41,6 @@ export default class ScriptTable extends Vue {
     //width: '95vw',
     height: 'calc(100vh - 50px)',
     filters: true,
-    contextMenu: true,
-    dropdownMenu: true,
     allowInsertColumn: false,
     allowRemoveColumn: false,
     autoWrapCol: false,
@@ -52,6 +50,23 @@ export default class ScriptTable extends Vue {
       {data: 'id', skipColumnOnPaste: true},
       {data: 'text'},
     ],
+    contextMenu: {
+      items: {
+        'row_above': { name: '行を上に挿入' },
+        'row_below': { name: '行を下に挿入' },
+        '---------': {},
+        'remove_row': { name: '行を削除' },
+      }
+    },
+    dropdownMenu: {
+      items: {
+        'filter_by_condition': {},
+        'filter_operators': {},
+        'filter_by_condition2': {},
+        'filter_by_value': {},
+        'filter_action_bar': {},
+      }
+    },
     afterChange: this.afterChange.bind(this),
   }
 
