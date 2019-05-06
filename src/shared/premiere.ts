@@ -54,6 +54,7 @@ export namespace Premiere {
     path: string
     duration: number
     startAt: number
+    subtitle: string
   }
 
   export interface SequenceApi {

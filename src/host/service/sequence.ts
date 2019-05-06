@@ -2,7 +2,7 @@ import {Premiere} from '../../shared'
 import {find, findAssetFileByPath, ensureAssetBin} from './util'
 import {ExposeFn} from './type'
 
-// FIXME: xmp.ts と重複している
+// FIXME: duplicate with xmp.ts
 declare class XMPMeta {
   constructor(serialized: string)
   dumpObject(): any
@@ -21,6 +21,19 @@ enum MetadataType {
 
 const kPProPrivateProjectMetadataURI = 'http://ns.adobe.com/premierePrivateProjectMetaData/1.0/'
 const scenePropertyName = 'VoDrameScene'
+const mogrtBinName = "mogrt"
+
+function findClipByName(bin: ProjectItem, name: string) {
+  return find(bin.children, (i: ProjectItem) => i.name === name)
+}
+
+function findMogrt(name: string): ProjectItem | undefined {
+  // TODO: multi project
+  const bin = find(app.project.rootItem.children, (i: ProjectItem) => i.name === mogrtBinName)
+  if (bin) {
+    return findClipByName(bin, name)
+  }
+}
 
 export class SequenceService implements Premiere.SequenceApi {
   expose(f: ExposeFn): void {
@@ -59,15 +72,21 @@ export class SequenceService implements Premiere.SequenceApi {
     const audioTrack = s.audioTracks[0]
     if (!audioTrack) throw new Error(`Sequence ${params.id} hasn't audio tracks`)
 
+    const videoTrack = s.videoTracks[0]
+    if (!videoTrack) throw new Error(`Sequence ${params.id} hasn't video tracks`)
+
     // remove all clips
     for (let i = audioTrack.clips.numItems - 1; i >= 0; i--) {
       const clip = audioTrack.clips[i]
       ;(clip as any).remove(true)
     }
+    for (let i = videoTrack.clips.numItems - 1; i >= 0; i--) {
+      const clip = videoTrack.clips[i]
+      ;(clip as any).remove(true)
+    }
 
     const bin = ensureAssetBin(app.project) // FIXME: multiple project
 
-    //var t = app.project.activeSequence.audioTracks[0]
     params.clips.forEach((clip, i) => {
       const asset = findAssetFileByPath(bin, clip.path)
       if (asset) {
@@ -79,8 +98,23 @@ export class SequenceService implements Premiere.SequenceApi {
       }
     })
 
-    // var b = app.project.rootItem.children[1].children[0]
-    // a.insertClip(b, 1)
+    const subtitle = findMogrt('Subtitle') // FIXME: make configurable
+    if (!subtitle) throw new Error('Subtitle was not found')
+
+    ;(subtitle as any).setOutPoint(0.1)
+
+    params.clips.forEach((clip, i) => {
+      videoTrack.overwriteClip(subtitle, clip.startAt)
+      const placedClip: any = videoTrack.clips[i]
+      placedClip.name = clip.id
+      const endTime = new Time()
+      endTime.seconds =  placedClip.start.seconds + clip.duration
+      placedClip.end = endTime
+
+      const props = placedClip.getMGTComponent().properties
+      const sourceTextProp = props.getParamForDisplayName('SourceText')
+      sourceTextProp.setValue(clip.subtitle)
+    })
   }
 
   private ensureSceneMetadata(): void {

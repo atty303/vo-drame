@@ -87,7 +87,8 @@ export class ScenarioServiceImpl implements ScenarioService {
         id: dialogue.id,
         path: speechFile.path,
         duration: speechFile.duration,
-        startAt
+        startAt,
+        subtitle: dialogue.text,
       }
       startAt += speechFile.duration + 1
       return r
