@@ -64,16 +64,13 @@ export default class App extends Vue {
     return this.selectedSequenceId.length > 0
   }
 
-  constructor() {
-    super()
-    const id = localStorage.getItem('selectedSequenceId')
-    if (id) this.selectedSequenceId = id
-  }
-
   async created() {
     const skin = csi.getHostEnvironment().appSkinInfo
     colors.setBrand('primary', uiColorToCss(skin.systemHighlightColor))
     colors.setBrand('secondary', uiColorToCss(skin.appBarBackgroundColor.color))
+
+    const id = localStorage.getItem('selectedSequenceId')
+    if (id) this.selectedSequenceId = id
   }
 
   @Watch('selectedSequenceId')
