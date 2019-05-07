@@ -62,7 +62,7 @@ export class ScenarioServiceImpl implements ScenarioService {
 
     // render speechs
     const ps = updatedAssets.map(async (dialogue) => {
-      const res = await axios.post('https://vom303.ap.ngrok.io', dialogue.text, {responseType: 'arraybuffer'})
+      const res = await axios.post('http://localhost:8080', dialogue.text, {responseType: 'arraybuffer'})
       const filePath = path.join(bundlePath, dialogue.id + '.wav')
       return {
         ...await this.speechFileAdapter.write(filePath, Buffer.from(res.data)),
@@ -93,9 +93,11 @@ export class ScenarioServiceImpl implements ScenarioService {
         startAt,
         subtitle: dialogue.text,
       }
-      startAt += speechFile.duration + 1
+      startAt += speechFile.duration
+      startAt += (dialogue.margin !== undefined) ? dialogue.margin : 1
       clips.push(r)
     }
+    //console.log(clips)
 
     this.api.sequence.syncClips({id: sequenceId, clips})
   }

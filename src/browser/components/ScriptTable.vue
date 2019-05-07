@@ -31,8 +31,13 @@ export default class ScriptTable extends Vue {
 
   readonly hotSettings = {
     rowHeaders: true,
-    colHeaders: ['ID', '台詞'],
-    colWidths: [0, '400'],
+    colHeaders: ['ID', '台詞', '間'],
+    colWidths: [0, '400', 0],
+    columns: [
+      {data: 'id', skipColumnOnPaste: true},
+      {data: 'text'},
+      {data: 'margin', type: 'numeric'},
+    ],
     hiddenColumns: {
       columns: [0],
       indicators: false,
@@ -46,10 +51,6 @@ export default class ScriptTable extends Vue {
     autoWrapCol: false,
     autoWrapRow: false,
     dataSchema: () => Dialogue.empty(),
-    columns: [
-      {data: 'id', skipColumnOnPaste: true},
-      {data: 'text'},
-    ],
     contextMenu: {
       items: {
         'row_above': { name: '行を上に挿入' },
@@ -84,9 +85,16 @@ export default class ScriptTable extends Vue {
   //@Emit()
   sceneChanged(): Scene {
     const hot = (this.$refs.hot as any).hotInstance
-    const dialogues = hot.getData().map(arr => new Dialogue({id: arr[0], text: arr[1]}))
+    const dialogues = hot.getSourceData().map(r => {
+      const margin = parseFloat(r.margin)
+      return new Dialogue({
+        id: r.id,
+        text: r.text,
+        margin: isNaN(margin) ? undefined : margin,
+      })
+    })
     const scene = new Scene({ dialogues })
-    console.log(dialogues)
+    //console.log(dialogues)
     this.$emit('sceneChanged', scene)
     return scene
   }
