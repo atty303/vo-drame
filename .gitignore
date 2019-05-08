@@ -1,11 +1,11 @@
 .idea
 
 node_modules
-.cache-*
+.cache*
 yarn-error.log
 
-*/dist/**/*.js
-*/dist/**/*.map
-*/dist/**/*.css
-
 dist/
+
+mimetype
+META-INF
+build/
