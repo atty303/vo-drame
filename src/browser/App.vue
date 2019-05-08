@@ -30,7 +30,6 @@
 
 <script lang="ts">
 import {Component, Vue, Inject, Watch} from 'vue-property-decorator'
-import Debug from './components/Debug.vue'
 import SceneTable from './components/SceneTable.vue'
 import ScriptTable from './components/ScriptTable.vue'
 import {Scene} from './domain'
@@ -46,7 +45,6 @@ function uiColorToCss(c: any): string {
 
 @Component({
   components: {
-    Debug,
     ScriptTable,
     SequenceSelect,
     SceneTable,
