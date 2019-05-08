@@ -49,12 +49,15 @@ export namespace Premiere {
     name: string
   }
 
+  export type MediaPath = string
+
   export interface SyncingClip {
     id: string
     path: string
     duration: number
     startAt: number
     subtitle: string
+    subtitlePath: MediaPath
   }
 
   export interface SequenceApi {

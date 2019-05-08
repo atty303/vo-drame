@@ -92,6 +92,7 @@ export class ScenarioServiceImpl implements ScenarioService {
         duration: speechFile.duration,
         startAt,
         subtitle: dialogue.text,
+        subtitlePath: 'モーショングラフィックステンプレートメディア/Subtitle', // FIXME: make configurable
       }
       startAt += speechFile.duration
       startAt += (dialogue.margin !== undefined) ? dialogue.margin : 1

@@ -1,3 +1,5 @@
+import { Premiere } from "../../shared";
+
 declare var Folder: {
   fs: string
 }
@@ -36,4 +38,26 @@ export function ensureAssetBin(project: Project): ProjectItem {
     if (!bin) throw new Error(`Couldn't create bin: ${assetBinName}`)
   }
   return bin
+}
+
+export function findProjectItemByPath(project: Project, path: Premiere.MediaPath): ProjectItem | undefined {
+  const run = (bin: ProjectItem, xs: string[]): ProjectItem | undefined => {
+    let found: ProjectItem | undefined
+    for (let i = 0; i < bin.children.numItems; ++i) {
+      const item = bin.children[i]
+      if (item.name === xs[0]) {
+        found = item
+        break
+      }
+    }
+    if (found) {
+      if (xs.length === 1) {
+        return found
+      } else {
+        return run(found, xs.slice(1))
+      }
+    }
+  }
+
+  return run(project.rootItem, path.split('/'))
 }

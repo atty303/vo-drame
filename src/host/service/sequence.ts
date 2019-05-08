@@ -1,5 +1,5 @@
 import {Premiere} from '../../shared'
-import {find, findAssetFileByPath, ensureAssetBin} from './util'
+import * as util from './util'
 import {ExposeFn} from './type'
 
 // FIXME: duplicate with xmp.ts
@@ -21,18 +21,9 @@ enum MetadataType {
 
 const kPProPrivateProjectMetadataURI = 'http://ns.adobe.com/premierePrivateProjectMetaData/1.0/'
 const scenePropertyName = 'VoDrameScene'
-const mogrtBinName = "mogrt"
-
-function findMogrt(name: string): ProjectItem | undefined {
-  // TODO: multi project
-  const bin = find(app.project.rootItem.children, (i: ProjectItem) => i.name === mogrtBinName)
-  if (bin) {
-    return find(bin.children, (i: ProjectItem) => i.name === name)
-  }
-}
 
 function findTrackItemByName(track: Track, name: string) {
-  return find(track.clips, (i: TrackItem) => i.name === name)
+  return util.find(track.clips, (i: TrackItem) => i.name === name)
 }
 
 export class SequenceService implements Premiere.SequenceApi {
@@ -43,7 +34,7 @@ export class SequenceService implements Premiere.SequenceApi {
   }
 
   setScene(params: {id: Premiere.SequenceId, value: string}): void {
-    const s = find(app.project.sequences, (v: Sequence) => v.sequenceID === params.id) // TODO: multi project
+    const s = util.find(app.project.sequences, (v: Sequence) => v.sequenceID === params.id) // TODO: multi project
     if (s) {
       this.ensureSceneMetadata()
       const x = new XMPMeta(s.projectItem.getProjectMetadata())
@@ -54,7 +45,7 @@ export class SequenceService implements Premiere.SequenceApi {
   }
 
   getScene(params: {id: Premiere.SequenceId}): string | undefined {
-    const s = find(app.project.sequences, (v: Sequence) => v.sequenceID === params.id) // TODO: multi project
+    const s = util.find(app.project.sequences, (v: Sequence) => v.sequenceID === params.id) // TODO: multi project
     if (s) {
       return s.projectItem.getProjectMetadata()
       /*
@@ -66,7 +57,7 @@ export class SequenceService implements Premiere.SequenceApi {
   }
 
   syncClips(params: {id: Premiere.SequenceId, clips: Premiere.SyncingClip[]}): void {
-    const s = find(app.project.sequences, (v: Sequence) => v.sequenceID === params.id) // TODO: multi project
+    const s = util.find(app.project.sequences, (v: Sequence) => v.sequenceID === params.id) // TODO: multi project
     if (!s) return
 
     const audioTrack = s.audioTracks[0]
@@ -86,10 +77,10 @@ export class SequenceService implements Premiere.SequenceApi {
       ;(clip as any).remove(false)
     }
 
-    const bin = ensureAssetBin(app.project) // FIXME: multiple project
+    const bin = util.ensureAssetBin(app.project) // FIXME: multiple project
 
     params.clips.forEach((clip, i) => {
-      const asset = findAssetFileByPath(bin, clip.path)
+      const asset = util.findAssetFileByPath(bin, clip.path)
       if (asset) {
         audioTrack.overwriteClip(asset, clip.startAt)
 
@@ -100,12 +91,13 @@ export class SequenceService implements Premiere.SequenceApi {
       }
     })
 
-    const subtitle = findMogrt('Subtitle') // FIXME: make configurable
-    if (!subtitle) throw new Error('Subtitle was not found')
-
-    ;(subtitle as any).setOutPoint(0.1)
 
     params.clips.forEach((clip, i) => {
+      const subtitle = util.findProjectItemByPath(app.project, clip.subtitlePath) // FIXME: multiple project
+      if (!subtitle) throw new Error(`Subtitle was not found: ${clip.subtitlePath}`)
+
+      ;(subtitle as any).setOutPoint(0.1)
+
       videoTrack.overwriteClip(subtitle, clip.startAt)
       const placedClip: any = videoTrack.clips[i]
       placedClip.name = clip.id
