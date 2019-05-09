@@ -1,14 +1,14 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <q-header>
-      <q-toolbar class="" style="min-height: 30px">
+      <q-toolbar style="min-height: 30px">
         <span>シーケンス</span>
         <sequence-select v-model="selectedSequenceId" class="q-mx-xs"></sequence-select>
-        <q-btn label="新規作成" icon="add" size="xs" flat dense
+        <q-btn label="新規作成" icon="add" size="sm" flat dense
           v-if="canAdd"
           @click="onAdd"
         ></q-btn>
-        <q-btn label="同期" icon="sync" size="xs" flat dense
+        <q-btn label="同期" icon="sync" size="sm" flat dense
           v-if="!canAdd"
           :loading="isSyncing"
           :disable="!canSync"
@@ -16,7 +16,7 @@
         ></q-btn>
         <q-separator vertical inset dark class="q-mx-sm"></q-separator>
         <q-space></q-space>
-        <q-btn label="再読み込み" icon="build" size="xs" flat dense @click="onRefresh"></q-btn>
+        <q-btn label="再読み込み" icon="build" size="sm" flat dense @click="onRefresh"></q-btn>
       </q-toolbar>
     </q-header>
     <q-page-container>
@@ -26,7 +26,6 @@
       </q-page>
     </q-page-container>
   </q-layout>
-
 </template>
 
 <script lang="ts">

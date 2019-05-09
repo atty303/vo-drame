@@ -2,6 +2,7 @@
   <div :style="appStyle">
     <panel-menu v-model="selectedPanelMenu"></panel-menu>
     <scenario-view v-if="selectedPanelMenu === 'scenario'"></scenario-view>
+    <actor-view v-if="selectedPanelMenu === 'actor'"></actor-view>
   </div>
 </template>
 
@@ -11,6 +12,7 @@ import {colors} from 'quasar'
 
 import {default as PanelMenu, MenuItem} from './components/PanelMenu.vue'
 import ScenarioView from './components/ScenarioView.vue'
+import ActorView from './components/ActorView.vue'
 import {csi} from './cse'
 import {CSInterface} from 'csinterface-ts'
 
@@ -22,6 +24,7 @@ function uiColorToCss(c: any): string {
   components: {
     PanelMenu,
     ScenarioView,
+    ActorView,
   },
 })
 export default class App extends Vue {

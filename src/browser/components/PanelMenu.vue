@@ -7,7 +7,7 @@ import {Component, Vue, Inject, Watch, Prop} from 'vue-property-decorator'
 
 import {csi} from '../cse'
 
-export type MenuItem = 'scenario' | 'settings'
+export type MenuItem = 'scenario' | 'actor'
 
 @Component({})
 export default class PanelMenu extends Vue {
@@ -18,8 +18,8 @@ export default class PanelMenu extends Vue {
   watchSelectedItem(): void {
     csi.setPanelFlyoutMenu(`
       <Menu>
-        <MenuItem Id="scenario" Label="ビュー: 脚本" Enabled="true" Checked="${this.value === 'scenario' ? 'true' : 'false'}"/>
-        <MenuItem Id="settings" Label="ビュー: 設定" Enabled="true" Checked="${this.value === 'settings' ? 'true' : 'false'}"/>
+        <MenuItem Id="scenario" Label="ビュー: シナリオ" Enabled="true" Checked="${this.value === 'scenario' ? 'true' : 'false'}"/>
+        <MenuItem Id="actor" Label="ビュー: アクター" Enabled="true" Checked="${this.value === 'actor' ? 'true' : 'false'}"/>
       </Menu>
     `)
   }
