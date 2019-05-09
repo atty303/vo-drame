@@ -1,31 +1,34 @@
 <template>
-  <q-layout view="hHh Lpr lFf" :style="appStyle">
-    <q-header>
-      <q-toolbar class="" style="min-height: 30px">
-        <span>シーケンス</span>
-        <sequence-select v-model="selectedSequenceId" class="q-mx-xs"></sequence-select>
-        <q-btn label="新規作成" icon="add" size="xs" flat dense
-          v-if="canAdd"
-          @click="onAdd"
-        ></q-btn>
-        <q-btn label="同期" icon="sync" size="xs" flat dense
-          v-if="!canAdd"
-          :loading="isSyncing"
-          :disable="!canSync"
-          @click="onSync"
-        ></q-btn>
-        <q-separator vertical inset dark class="q-mx-sm"></q-separator>
-        <q-space></q-space>
-        <q-btn label="再読み込み" icon="build" size="xs" flat dense @click="onRefresh"></q-btn>
-      </q-toolbar>
-    </q-header>
-    <q-page-container>
-      <q-page padding>
-        <script-table :scene="scene" @sceneChanged="onSceneChanged"></script-table>
-        <!--scene-table :scene="scene" @sceneChanged="onSceneChanged"></scene-table-->
-      </q-page>
-    </q-page-container>
-  </q-layout>
+  <div :style="appStyle">
+    <panel-menu v-model="selectedPanelMenu"></panel-menu>
+    <q-layout view="hHh Lpr lFf" v-if="selectedPanelMenu === 'scenario'">
+      <q-header>
+        <q-toolbar class="" style="min-height: 30px">
+          <span>シーケンス</span>
+          <sequence-select v-model="selectedSequenceId" class="q-mx-xs"></sequence-select>
+          <q-btn label="新規作成" icon="add" size="xs" flat dense
+            v-if="canAdd"
+            @click="onAdd"
+          ></q-btn>
+          <q-btn label="同期" icon="sync" size="xs" flat dense
+            v-if="!canAdd"
+            :loading="isSyncing"
+            :disable="!canSync"
+            @click="onSync"
+          ></q-btn>
+          <q-separator vertical inset dark class="q-mx-sm"></q-separator>
+          <q-space></q-space>
+          <q-btn label="再読み込み" icon="build" size="xs" flat dense @click="onRefresh"></q-btn>
+        </q-toolbar>
+      </q-header>
+      <q-page-container>
+        <q-page padding>
+          <script-table :scene="scene" @sceneChanged="onSceneChanged"></script-table>
+          <!--scene-table :scene="scene" @sceneChanged="onSceneChanged"></scene-table-->
+        </q-page>
+      </q-page-container>
+    </q-layout>
+  </div>
 </template>
 
 <script lang="ts">
@@ -37,7 +40,8 @@ import * as service from './service'
 import {csi} from './cse'
 import {colors} from 'quasar'
 import SequenceSelect from './components/SequenceSelect.vue'
-import { Premiere } from '../shared';
+import {Premiere} from '../shared'
+import {default as PanelMenu, MenuItem} from './components/PanelMenu.vue'
 
 function uiColorToCss(c: any): string {
   return `rgba(${Math.floor(c.red)},${Math.floor(c.green)},${Math.floor(c.blue)},${c.alpha / 255})`
@@ -48,6 +52,7 @@ function uiColorToCss(c: any): string {
     ScriptTable,
     SequenceSelect,
     SceneTable,
+    PanelMenu,
   }
 })
 export default class App extends Vue {
@@ -57,6 +62,7 @@ export default class App extends Vue {
   scene: Scene = Scene.empty()
   isSyncing: boolean = false
   selectedSequenceId: Premiere.SequenceId = ''
+  selectedPanelMenu: MenuItem = 'scenario'
 
   get appStyle(): string {
     const skin = csi.getHostEnvironment().appSkinInfo
