@@ -12,6 +12,7 @@ import {colors} from 'quasar'
 import {default as PanelMenu, MenuItem} from './components/PanelMenu.vue'
 import ScenarioView from './components/ScenarioView.vue'
 import {csi} from './cse'
+import {CSInterface} from 'csinterface-ts'
 
 function uiColorToCss(c: any): string {
   return `rgba(${Math.floor(c.red)},${Math.floor(c.green)},${Math.floor(c.blue)},${c.alpha / 255})`
@@ -25,21 +26,28 @@ function uiColorToCss(c: any): string {
 })
 export default class App extends Vue {
   selectedPanelMenu: MenuItem = 'scenario'
+  skin: any = csi.getHostEnvironment().appSkinInfo
 
   get appStyle(): string {
-    const skin = csi.getHostEnvironment().appSkinInfo
-    const bgColor = uiColorToCss(skin.panelBackgroundColor.color)
-    return `font-family: '${skin.baseFontFamily}'; font-size: ${skin.baseFontSize}px; background-color: ${bgColor}`
+    const bgColor = uiColorToCss(this.skin.panelBackgroundColor.color)
+    return `font-family: '${this.skin.baseFontFamily}'; font-size: ${this.skin.baseFontSize}px; background-color: ${bgColor}`
   }
 
   async created() {
-    this.setSkin()
+    csi.addEventListener('com.adobe.csxs.events.ThemeColorChanged', this.onAppThemeChangedListener)
+    this.onAppThemeChanged()
   }
 
-  setSkin() {
-    const skin = csi.getHostEnvironment().appSkinInfo
-    colors.setBrand('primary', uiColorToCss(skin.systemHighlightColor))
-    colors.setBrand('secondary', uiColorToCss(skin.appBarBackgroundColor.color))
+  beforeDestroy() {
+    csi.removeEventListener('com.adobe.csxs.events.ThemeColorChanged', this.onAppThemeChangedListener)
   }
+
+  onAppThemeChanged() {
+    this.skin = csi.getHostEnvironment().appSkinInfo
+    colors.setBrand('primary', uiColorToCss(this.skin.systemHighlightColor))
+    colors.setBrand('secondary', uiColorToCss(this.skin.appBarBackgroundColor.color))
+  }
+
+  private readonly onAppThemeChangedListener = this.onAppThemeChanged.bind(this)
 }
 </script>
