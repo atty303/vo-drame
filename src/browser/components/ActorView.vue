@@ -185,7 +185,6 @@ export default class SettingsView extends Vue {
     if (!a) return
 
     this.$q.dialog({
-      dark: true,
       message: `"${a.name}" を削除しますか？`
     } as any).onOk(() => {
       this.actors = this.actors.filter(a => a.id !== this.selectedActorId)
