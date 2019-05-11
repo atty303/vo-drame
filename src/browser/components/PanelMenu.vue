@@ -7,7 +7,7 @@ import {Component, Vue, Inject, Watch, Prop} from 'vue-property-decorator'
 
 import {csi} from '../cse'
 
-export type MenuItem = 'scenario' | 'actor'
+export type MenuItem = 'scenario' | 'actor' | 'reload'
 
 @Component({})
 export default class PanelMenu extends Vue {
@@ -20,6 +20,8 @@ export default class PanelMenu extends Vue {
       <Menu>
         <MenuItem Id="scenario" Label="ビュー: シナリオ" Enabled="true" Checked="${this.value === 'scenario' ? 'true' : 'false'}"/>
         <MenuItem Id="actor" Label="ビュー: アクター" Enabled="true" Checked="${this.value === 'actor' ? 'true' : 'false'}"/>
+        <MenuItem Label="---"/>
+        <MenuItem Id="reload" Label="再読み込み" Enabled="true"/>
       </Menu>
     `)
   }
@@ -34,7 +36,11 @@ export default class PanelMenu extends Vue {
   }
 
   onMenuClicked(e) {
-    this.$emit('input', e.data.menuId)
+    if (e.data.menuId === 'reload') {
+      location.reload()
+    } else {
+      this.$emit('input', e.data.menuId)
+    }
   }
 
   private readonly onMenuClickedListener = this.onMenuClicked.bind(this)

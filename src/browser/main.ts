@@ -40,7 +40,6 @@ const scenarioService = new service.ScenarioServiceImpl(
 new Vue({
   render: (h) => h(App),
   provide: {
-    api,
     scenarioService,
   }
 }).$mount('#app')

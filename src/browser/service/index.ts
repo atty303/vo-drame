@@ -30,6 +30,17 @@ export class ScenarioServiceImpl implements ScenarioService {
       presetPath: `${cse.getExtensionPath()}/res/placeholder.sqpreset`,
     })
     console.log(xmlString)
+    if (xmlString) {
+      const parser = new DOMParser()
+      const xml = parser.parseFromString(xmlString as any, 'text/xml')
+      const node = xml.querySelector('VoDrame')
+      if (node) {
+        const a = node.textContent
+        if (a) {
+          //scene = new Scene(JSON.parse(a))
+        }
+      }
+    }
   }
 
   async saveActorMetadata(): Promise<void> {

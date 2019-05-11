@@ -14,9 +14,6 @@
           :disable="!canSync"
           @click="onSync"
         ></q-btn>
-        <q-separator vertical inset dark class="q-mx-sm"></q-separator>
-        <q-space></q-space>
-        <q-btn label="再読み込み" icon="build" size="sm" flat dense @click="onRefresh"></q-btn>
       </q-toolbar>
     </q-header>
     <q-page-container>
@@ -75,10 +72,6 @@ export default class ScenarioView extends Vue {
     if (this.selectedSequenceId) {
       this.scene = await this.scenarioService.loadScene(this.selectedSequenceId) || Scene.empty()
     }
-  }
-
-  onRefresh(): void {
-    location.reload()
   }
 
   onSceneChanged(scene: Scene): void {
