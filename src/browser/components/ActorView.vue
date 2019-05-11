@@ -19,7 +19,7 @@
     </q-header>
     <q-page-container>
       <q-page class="text-white">
-        <q-list dark class="q-pt-sm">
+        <q-list dark class="q-pt-sm" v-if="selectedActorId.length > 0">
           <q-expansion-item label="オーディオ" icon="mic" default-opened dense header-style="border-bottom: 1px solid grey">
             <q-card class="bg-secondary">
               <q-card-section>
@@ -37,11 +37,11 @@
               <q-card-section>
                 <div class="row q-gutter-sm">
                   <div class="col-2">
-                    <q-input value="1" label="トラック" placeholder="1" dense dark standout></q-input>
+                    <q-input v-model="selectedActor.subtitle.track" label="トラック" placeholder="1" dense dark standout></q-input>
                   </div>
                   <div class="col-8">
                     <q-input label="モーショングラフィックス"
-                      value="モーショングラフィックステンプレートメディア/Subtitle"
+                      v-model="selectedActor.subtitle.mediaPath"
                       placeholder="モーショングラフィックステンプレートメディア/字幕"
                       dense dark standout bottom-slots>
                       <template v-slot:hint>
@@ -74,21 +74,10 @@
 <script lang="ts">
 import {Component, Vue, Inject, Watch} from 'vue-property-decorator'
 import * as uuid from 'uuid'
+import {Actor, ActorId} from '../domain'
 
 import * as service from '../service'
 
-interface ActorSubtitle {
-  track: number
-  mediaPath: string
-}
-
-type ActorId = string
-
-interface Actor {
-  id: ActorId
-  name: string
-  subtitle?: ActorSubtitle
-}
 
 @Component({})
 export default class SettingsView extends Vue {
@@ -120,8 +109,13 @@ export default class SettingsView extends Vue {
     return this.actors.length > 1
   }
 
+  @Watch('selectedActor', {deep: true})
+  watchSelectedActor() {
+    this.scenarioService.saveActorMetadata(this.actors)
+  }
+
   async created() {
-    await this.scenarioService.loadActorMetadata()
+    this.actors = await this.scenarioService.loadActorMetadata()
   }
 
   onAddActor() {
@@ -134,14 +128,8 @@ export default class SettingsView extends Vue {
       cancel: true,
       persistent: true,
     } as any).onOk((name) => {
-      const actor = {
-        id: uuid.v4(),
-        name,
-        subtitle: {
-          track: 1,
-          mediaPath: 'モーショングラフィックステンプレートメディア/字幕',
-        },
-      }
+      const actor = new Actor()
+      actor.name = name
       this.actors = [...this.actors, actor]
       this.selectedActorId = actor.id
     })
@@ -169,12 +157,9 @@ export default class SettingsView extends Vue {
     if (!a) return
 
     const actor = {
+      ...a,
       id: uuid.v4(),
       name: `${a.name}のコピー`,
-      subtitle: {
-        track: 1,
-        mediaPath: 'モーショングラフィックステンプレートメディア/字幕',
-      },
     }
     this.actors = [...this.actors, actor]
     this.selectedActorId = actor.id

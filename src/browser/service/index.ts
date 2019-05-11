@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import {fs, fs_promises, path} from '../util/node'
-import {Scene} from '../domain'
+import {Scene, Actor} from '../domain'
 import {Premiere} from '../../shared'
 import {SpeechFileAdapter, SpeechFile} from './SpeechFile'
 import * as cse from '../cse'
@@ -9,8 +9,8 @@ import * as cse from '../cse'
 export * from './SpeechFile'
 
 export interface ScenarioService {
-  loadActorMetadata(): Promise<void>
-  saveActorMetadata(): Promise<void>
+  loadActorMetadata(): Promise<Actor[]>
+  saveActorMetadata(actors: Actor[]): Promise<void>
   loadScene(sequenceId: Premiere.SequenceId): Promise<Scene | undefined>
   saveScene(sequenceId: Premiere.SequenceId, scene: Scene): Promise<void>
   syncScene(sequenceId: Premiere.SequenceId, scene: Scene): Promise<void>
@@ -23,13 +23,13 @@ export class ScenarioServiceImpl implements ScenarioService {
     this.speechFileAdapter = speechFileAdapter
   }
 
-  async loadActorMetadata(): Promise<void> {
+  async loadActorMetadata(): Promise<Actor[]> {
     const projectId = await this.api.project.currentProjectId()
     const xmlString = await this.api.metadata.getProjectMetadata({
       id: projectId,
       presetPath: `${cse.getExtensionPath()}/res/placeholder.sqpreset`,
     })
-    console.log(xmlString)
+    let actors: Actor[] = []
     if (xmlString) {
       const parser = new DOMParser()
       const xml = parser.parseFromString(xmlString as any, 'text/xml')
@@ -37,17 +37,20 @@ export class ScenarioServiceImpl implements ScenarioService {
       if (node) {
         const a = node.textContent
         if (a) {
-          //scene = new Scene(JSON.parse(a))
+          actors = JSON.parse(a).actors || []
         }
       }
     }
+    return actors
   }
 
-  async saveActorMetadata(): Promise<void> {
-    const projectId = await this.api.project.currentProjectId()
+  async saveActorMetadata(actors: Actor[]): Promise<void> {
+    const projectId = await this.api.project.currentProjectId() // FIXME: multi project
     this.api.metadata.setProjectMetadata({
       id: projectId,
-      value: '',
+      value: JSON.stringify({
+        actors
+      }),
       presetPath: `${cse.getExtensionPath()}/res/placeholder.sqpreset`,
     })
   }

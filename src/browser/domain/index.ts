@@ -47,3 +47,20 @@ export class Scene {
     return !this.isEmpty
   }
 }
+
+interface ActorSubtitle {
+  track: number
+  mediaPath: string
+}
+
+export type ActorId = string
+
+export class Actor {
+  id: ActorId = uuid.v4()
+  name: string = ''
+  subtitle: ActorSubtitle = {
+    track: 1,
+    mediaPath: 'モーショングラフィックステンプレートメディア/字幕',
+  }
+}
+
