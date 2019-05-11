@@ -3,7 +3,7 @@
     <q-header>
       <q-toolbar style="min-height: 30px">
         <span>アクター</span>
-        <q-select value="<<共通>>" dense outlined dark></q-select>
+        <q-select value="1: 東北きりたん" dense outlined dark></q-select>
         <q-btn label="新規作成" icon="add" flat dense size="sm" class="q-mx-sm"></q-btn>
         <q-btn label="複製" icon="file_copy" flat dense size="sm" class="q-mx-sm"></q-btn>
         <q-btn label="削除" icon="delete_outline" flat dense size="sm" class="q-mx-sm"></q-btn>
@@ -27,9 +27,13 @@
           <q-expansion-item label="字幕" icon="subtitles" default-opened dense header-style="border-bottom: 1px solid grey">
             <q-card class="bg-secondary">
               <q-card-section>
-                <div class="row">
+                <div class="row q-gutter-sm">
+                  <div class="col-2">
+                    <q-input value="1" label="トラック" placeholder="1" dense dark standout></q-input>
+                  </div>
                   <div class="col-8">
                     <q-input label="モーショングラフィックス"
+                      value="モーショングラフィックステンプレートメディア/Subtitle"
                       placeholder="モーショングラフィックステンプレートメディア/字幕"
                       dense dark standout bottom-slots>
                       <template v-slot:hint>
@@ -43,6 +47,15 @@
           </q-expansion-item>
 
           <q-expansion-item label="立ち絵" icon="person" default-opened dense header-style="border-bottom: 1px solid grey">
+            <q-card class="bg-secondary">
+              <q-card-section>
+                <div class="row q-gutter-sm">
+                  <div class="col-2">
+                    <q-input value="2" label="トラック" placeholder="1" dense dark standout></q-input>
+                  </div>
+                </div>
+              </q-card-section>
+            </q-card>
           </q-expansion-item>
         </q-list>
       </q-page>
@@ -53,8 +66,16 @@
 <script lang="ts">
 import {Component, Vue, Inject, Watch} from 'vue-property-decorator'
 
+import * as service from '../service'
+
 @Component({})
 export default class SettingsView extends Vue {
+  @Inject('scenarioService')
+  private scenarioService!: service.ScenarioService
+
+  async created() {
+    await this.scenarioService.loadActorMetadata()
+  }
 
 }
 </script>

@@ -17,6 +17,7 @@ import {HostEndpoint} from './rpc/endpoint'
 import * as plugPlug from './externobject/plugPlug'
 import * as xmp from './externobject/xmp'
 import {Bridge} from '../shared'
+import * as service from './service'
 
 // Load the PlugPlug plugin for messaging
 if (!ns.plugPlugObject) {
@@ -33,23 +34,20 @@ if (!ns.xmpObject) {
 // Create host-side endpoint of the rpc server
 const endpoint = new HostEndpoint(
   (data) => ns.plugPlugObject.dispatchEvent(Bridge.Events.RpcMessage, data),
-  (t) => console.log(t)
+  (t) => undefined//console.log(t)
 )
 ns.endpoint = endpoint
 ns[Bridge.Functions.SendRpcMessage] = (data: string) => endpoint.message(data)
 
 // Create the rpc server
-const server = new noice.Server(endpoint, {logConsole: true})
-
-import * as service from './service'
+const server = new noice.Server(endpoint, {logConsole: false})
 
 const srv = new service.PremiereService(
   new service.HelperService(),
   new service.ProjectService(),
-  new service.SequenceService()
+  new service.SequenceService(),
+  new service.MetadataService()
 )
-
 srv.expose(server.expose.bind(server))
-
 
 console.log(`###> Loaded in ${$.hiresTimer} ms`)

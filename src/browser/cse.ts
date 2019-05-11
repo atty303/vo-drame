@@ -6,7 +6,6 @@ import {Bridge} from '../shared'
 
 export const csi = new CSInterface()
 
-class CsiError extends Error {}
 
 export class BrowserEndpoint extends EventEmitter implements noice.LikeSocket {
   constructor() {
@@ -46,7 +45,9 @@ class CSExtendScriptError extends Error {
   }
 }
 
-
+export function getExtensionPath(): string {
+  return csi.getSystemPath(SystemPath.EXTENSION)
+}
 
 export async function evalScript(body: string): Promise<any> {
   return new Promise((resolve, reject) => {

@@ -5,7 +5,7 @@ export namespace Bridge {
   export const NamespaceInGlobal = '__io_github_atty303'
 
   export enum Functions {
-    SendRpcMessage = "sendRpcMessage"
+    SendRpcMessage = "sendRpcMessage",
   }
 
   export enum Events {

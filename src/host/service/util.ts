@@ -4,6 +4,8 @@ declare var Folder: {
   fs: string
 }
 
+export type ExposeFn = (name: string, handler: (params: any) => any) => void
+
 export function find<T, U>(arrayLike: T, predicate: (v: U) => boolean): U | undefined {
   let count = 0
   if ((arrayLike as any).numItems > 0) count = (arrayLike as any).numItems
@@ -19,6 +21,14 @@ export function find<T, U>(arrayLike: T, predicate: (v: U) => boolean): U | unde
 function extractFilename(path: string): string {
   const sep = (Folder.fs === 'Macintosh') ? '/' : '\\'
   return path.slice(path.lastIndexOf(sep) + 1)
+}
+
+function normalizePath(path: string): string {
+  if (Folder.fs === 'Macintosh') {
+    return path
+  } else {
+    return path.replace(/\//g, '\\')
+  }
 }
 
 export function findAssetFileByPath(bin: ProjectItem, path: string): ProjectItem | undefined {
@@ -38,6 +48,22 @@ export function ensureAssetBin(project: Project): ProjectItem {
     if (!bin) throw new Error(`Couldn't create bin: ${assetBinName}`)
   }
   return bin
+}
+
+const placeholderSeqName = '<<DO NOT DELETE>>'
+
+export function ensurePlaceholderSequence(project: Project, presetPath: string): ProjectItem {
+  const bin = ensureAssetBin(project)
+  let seq = findProjectItemByPath(project, `${assetBinName}/${placeholderSeqName}`)
+  if (!seq) {
+    app.enableQE()
+    console.log('***', normalizePath(presetPath))
+    qe.project.newSequence(placeholderSeqName, normalizePath(presetPath))
+    seq = findProjectItemByPath(project, placeholderSeqName)
+    if (!seq) throw new Error(`Couldn't create sequence: ${placeholderSeqName}`)
+    seq.moveBin(bin)
+  }
+  return seq
 }
 
 export function findProjectItemByPath(project: Project, path: Premiere.MediaPath): ProjectItem | undefined {

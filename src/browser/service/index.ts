@@ -4,10 +4,13 @@ import {fs, fs_promises, path} from '../util/node'
 import {Scene} from '../domain'
 import {Premiere} from '../../shared'
 import {SpeechFileAdapter, SpeechFile} from './SpeechFile'
+import * as cse from '../cse'
 
 export * from './SpeechFile'
 
 export interface ScenarioService {
+  loadActorMetadata(): Promise<void>
+  saveActorMetadata(): Promise<void>
   loadScene(sequenceId: Premiere.SequenceId): Promise<Scene | undefined>
   saveScene(sequenceId: Premiere.SequenceId, scene: Scene): Promise<void>
   syncScene(sequenceId: Premiere.SequenceId, scene: Scene): Promise<void>
@@ -20,9 +23,27 @@ export class ScenarioServiceImpl implements ScenarioService {
     this.speechFileAdapter = speechFileAdapter
   }
 
+  async loadActorMetadata(): Promise<void> {
+    const projectId = await this.api.project.currentProjectId()
+    const xmlString = await this.api.metadata.getProjectMetadata({
+      id: projectId,
+      presetPath: `${cse.getExtensionPath()}/res/placeholder.sqpreset`,
+    })
+    console.log(xmlString)
+  }
+
+  async saveActorMetadata(): Promise<void> {
+    const projectId = await this.api.project.currentProjectId()
+    this.api.metadata.setProjectMetadata({
+      id: projectId,
+      value: '',
+      presetPath: `${cse.getExtensionPath()}/res/placeholder.sqpreset`,
+    })
+  }
+
   async loadScene(sequenceId: Premiere.SequenceId): Promise<Scene | undefined> {
     let scene: Scene | undefined = undefined
-    const xmlString = await this.api.sequence.getScene({id: sequenceId})
+    const xmlString = await this.api.metadata.getSceneMetadata({id: sequenceId})
     if (xmlString) {
       const parser = new DOMParser()
       const xml = parser.parseFromString(xmlString as any, 'text/xml')
@@ -38,7 +59,7 @@ export class ScenarioServiceImpl implements ScenarioService {
   }
 
   async saveScene(sequenceId: Premiere.SequenceId,  scene: Scene): Promise<void> {
-    await this.api.sequence.setScene({id: sequenceId, value: JSON.stringify(scene)})
+    await this.api.metadata.setSceneMetadata({id: sequenceId, value: JSON.stringify(scene)})
   }
 
   async syncScene(sequenceId: Premiere.SequenceId, scene: Scene): Promise<void> {

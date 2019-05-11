@@ -1,9 +1,8 @@
 import {Premiere} from '../../shared'
-import {ExposeFn} from './type'
-import {find, findAssetFileByPath, ensureAssetBin} from './util'
+import * as util from './util'
 
 function findProject(id: Premiere.ProjectId): Project {
-  const p = find(app.projects, (i: Project) => i.documentID == id)
+  const p = util.find(app.projects, (i: Project) => i.documentID == id)
   if (p) {
     return p
   } else {
@@ -12,7 +11,7 @@ function findProject(id: Premiere.ProjectId): Project {
 }
 
 export class ProjectService implements Premiere.ProjectApi {
-  expose(f: ExposeFn): void {
+  expose(f: util.ExposeFn): void {
     f('currentProjectId', this.currentProjectId.bind(this))
     f('getProjectById', this.getProjectById.bind(this))
     f('getSequences', this.getSequences.bind(this))
@@ -50,12 +49,11 @@ export class ProjectService implements Premiere.ProjectApi {
 
   getAssetFiles(params: { id: Premiere.ProjectId }): Premiere.AssetFile[] {
     const p = findProject(params.id)
-    let bin = ensureAssetBin(p)
+    let bin = util.ensureAssetBin(p)
 
     const assets: Premiere.AssetFile[] = []
     for (let i = 0; i < bin.children.numItems; ++i) {
       const item: ProjectItem = (bin.children as any)[i]
-      console.log('###', item)
       if (item.type === 1) { // ProjectItemType.CLIP
         assets.push({
           path: item.getMediaPath(),
@@ -68,7 +66,7 @@ export class ProjectService implements Premiere.ProjectApi {
 
   importAssetFiles(params: { id: Premiere.ProjectId, files: Premiere.ImportingAssetFile[] }): void {
     const p = findProject(params.id)
-    let bin = ensureAssetBin(p)
+    let bin = util.ensureAssetBin(p)
 
     // import files
     const importingFiles = params.files.filter(f => f.action === Premiere.ImportAction.Import)
@@ -81,7 +79,7 @@ export class ProjectService implements Premiere.ProjectApi {
     const refreshingFiles = params.files.filter(f => f.action === Premiere.ImportAction.Refresh)
     if (refreshingFiles.length > 0) {
       refreshingFiles.forEach(file => {
-        const item = findAssetFileByPath(bin, file.path)
+        const item = util.findAssetFileByPath(bin, file.path)
         if (item) {
           item.refreshMedia()
           ;(item as any).clearOutPoint()
@@ -91,10 +89,11 @@ export class ProjectService implements Premiere.ProjectApi {
 
     // rename project items
     params.files.forEach(file => {
-      const item = findAssetFileByPath(bin, file.path)
+      const item = util.findAssetFileByPath(bin, file.path)
       if (item) {
         item.name = file.name
       }
     })
   }
+
 }

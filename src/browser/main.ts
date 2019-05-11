@@ -1,99 +1,16 @@
 import Vue from 'vue'
+import * as noice from 'noice-json-rpc'
+
 import App from './App.vue'
+import * as cse from './cse'
+import {Bridge, Premiere} from '../shared'
+import * as service from './service'
 
 // stylesheets
 import './styles/main.styl'
-import './styles/quasar.styl'
 import '../../node_modules/handsontable/dist/handsontable.full.css'
-import '@quasar/extras/material-icons/material-icons.css'
 
-import {
-  default as Quasar,
-  CloseMenu,
-  ClosePopup,
-  Notify,
-  QAvatar,
-  QBreadcrumbs,
-  QBreadcrumbsEl,
-  QBtn,
-  QBtnDropdown,
-  QCard,
-  QCardSection,
-  QDialog,
-  QDrawer,
-  QExpansionItem,
-  QField,
-  QFooter,
-  QHeader,
-  QIcon,
-  QInput,
-  QItem,
-  QItemLabel,
-  QItemSection,
-  QLayout,
-  QList,
-  QPage,
-  QPageContainer,
-  QRadio,
-  QSelect,
-  QSeparator,
-  QSpace,
-  QTable,
-  QTd,
-  QToggle,
-  QToolbar,
-  QToolbarTitle,
-  QTr,
-  QUploader,
-  Ripple,
-} from 'quasar'
-
-Vue.use(Quasar, {
-  config: {},
-  components: {
-    QAvatar,
-    QBreadcrumbs,
-    QBreadcrumbsEl,
-    QBtn,
-    QBtnDropdown,
-    QCard,
-    QCardSection,
-    QDialog,
-    QDrawer,
-    QExpansionItem,
-    QField,
-    QFooter,
-    QHeader,
-    QIcon,
-    QInput,
-    QItem,
-    QItemLabel,
-    QItemSection,
-    QLayout,
-    QList,
-    QPage,
-    QPageContainer,
-    QRadio,
-    QSelect,
-    QSeparator,
-    QSpace,
-    QTable,
-    QTd,
-    QToggle,
-    QToolbar,
-    QToolbarTitle,
-    QTr,
-    QUploader,
-  },
-  directives: {
-    CloseMenu,
-    ClosePopup,
-    Ripple,
-  },
-  plugins: {
-    Notify,
-  },
-})
+import './quasar-imports'
 
 Vue.config.productionTip = false
 
@@ -102,18 +19,11 @@ if (module.hot) {
   module.hot.dispose(() => onUnload(true))
 }
 
-import * as noice from 'noice-json-rpc'
-
-import {BrowserEndpoint} from './cse'
-import {Premiere} from '../shared'
-
-const endpoint = new BrowserEndpoint()
+const endpoint = new cse.BrowserEndpoint()
 const client = new noice.Client(endpoint, {logConsole: false})
 const api: Premiere.Api = client.api()
 
-export const premiereApi: Premiere.Api = api
-
-function onLoad(isHotLoading: boolean) {
+async function onLoad(isHotLoading: boolean) {
   if (!isHotLoading) endpoint.start()
 }
 
@@ -122,8 +32,6 @@ function onUnload(isHotLoading: boolean) {
 }
 
 onLoad(false)
-
-import * as service from './service'
 
 const scenarioService = new service.ScenarioServiceImpl(
   api,
@@ -136,3 +44,4 @@ new Vue({
     scenarioService,
   }
 }).$mount('#app')
+

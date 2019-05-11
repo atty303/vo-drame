@@ -1,59 +1,14 @@
 import {Premiere} from '../../shared'
 import * as util from './util'
-import {ExposeFn} from './type'
 
-// FIXME: duplicate with xmp.ts
-declare class XMPMeta {
-  constructor(serialized: string)
-  dumpObject(): any
-  getProperty(ns: string, field: string): any
-  setProperty(ns: string, field: string, value: any): void
-  doesPropertyExist(ns: string, field: string): boolean
-  serialize(): string
-}
-
-enum MetadataType {
-  Integer = 0,
-  Real = 1,
-  String = 2,
-  Boolean = 3,
-}
-
-const kPProPrivateProjectMetadataURI = 'http://ns.adobe.com/premierePrivateProjectMetaData/1.0/'
-const scenePropertyName = 'VoDrameScene'
 
 function findTrackItemByName(track: Track, name: string) {
   return util.find(track.clips, (i: TrackItem) => i.name === name)
 }
 
 export class SequenceService implements Premiere.SequenceApi {
-  expose(f: ExposeFn): void {
-    f('setScene', this.setScene.bind(this))
-    f('getScene', this.getScene.bind(this))
+  expose(f: util.ExposeFn): void {
     f('syncClips', this.syncClips.bind(this))
-  }
-
-  setScene(params: {id: Premiere.SequenceId, value: string}): void {
-    const s = util.find(app.project.sequences, (v: Sequence) => v.sequenceID === params.id) // TODO: multi project
-    if (s) {
-      this.ensureSceneMetadata()
-      const x = new XMPMeta(s.projectItem.getProjectMetadata())
-      console.log(x.dumpObject())
-      x.setProperty(kPProPrivateProjectMetadataURI, scenePropertyName, params.value)
-      ;(s.projectItem as any).setProjectMetadata(x.serialize(), [scenePropertyName])
-    }
-  }
-
-  getScene(params: {id: Premiere.SequenceId}): string | undefined {
-    const s = util.find(app.project.sequences, (v: Sequence) => v.sequenceID === params.id) // TODO: multi project
-    if (s) {
-      return s.projectItem.getProjectMetadata()
-      /*
-      const x = new XMPMeta(s.projectItem.getProjectMetadata())
-      const v =  x.getProperty(kPProPrivateProjectMetadataURI, scenePropertyName)
-      return v
-      */
-    }
   }
 
   syncClips(params: {id: Premiere.SequenceId, clips: Premiere.SyncingClip[]}): void {
@@ -111,8 +66,4 @@ export class SequenceService implements Premiere.SequenceApi {
     })
   }
 
-  private ensureSceneMetadata(): void {
-    const p = app.project // TODO: multiple project
-    p.addPropertyToProjectMetadataSchema(scenePropertyName, 'vo:Drame Scene JSON', MetadataType.String)
-  }
 }

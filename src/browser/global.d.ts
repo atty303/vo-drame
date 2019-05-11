@@ -1,4 +1,4 @@
-declare var module: {
+declare interface NodeModule {
   // https://parceljs.org/hmr.html
   hot: {
     dispose: (cb: () => void) => void

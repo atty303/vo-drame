@@ -3,6 +3,7 @@ export namespace Premiere {
     helper: HelperApi
     project: ProjectApi
     sequence: SequenceApi
+    metadata: MetadataApi
   }
 
   export interface HelperApi {
@@ -61,8 +62,13 @@ export namespace Premiere {
   }
 
   export interface SequenceApi {
-    setScene(params: {id: Premiere.SequenceId, value: string}): void
-    getScene(params: {id: Premiere.SequenceId}): string | undefined
     syncClips(params: {id: Premiere.SequenceId, clips: SyncingClip[]}): void
+  }
+
+  export interface MetadataApi {
+    setProjectMetadata(params: {id: Premiere.ProjectId, value: string, presetPath: string}): void
+    getProjectMetadata(params: {id: Premiere.ProjectId, presetPath: string}): string | undefined
+    setSceneMetadata(params: {id: Premiere.SequenceId, value: string}): void
+    getSceneMetadata(params: {id: Premiere.SequenceId}): string | undefined
   }
 }
