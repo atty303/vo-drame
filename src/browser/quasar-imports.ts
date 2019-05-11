@@ -7,6 +7,7 @@ import {
   default as Quasar,
   CloseMenu,
   ClosePopup,
+  Dialog,
   Notify,
   QAvatar,
   QBreadcrumbs,
@@ -87,6 +88,7 @@ Vue.use(Quasar as any, {
     Ripple,
   },
   plugins: {
+    Dialog,
     Notify,
   },
 })
