@@ -12,7 +12,7 @@
 <script lang="ts">
 import {HotTable} from '@handsontable/vue'
 import {Component, Vue, Inject, Emit, Prop, Watch} from 'vue-property-decorator';
-import {Scene, Dialogue} from '../domain'
+import {Scene, Dialogue, Actor} from '../domain'
 import * as service from '../service'
 import { HotTableComponent, HotTableData } from '@handsontable/vue/types';
 import Handsontable from 'handsontable';
@@ -29,12 +29,19 @@ export default class ScriptTable extends Vue {
   @Prop({default: () => Scene.empty()})
   scene!: Scene
 
+  actors: Actor[] = []
+
   readonly hotSettings = {
     rowHeaders: true,
-    colHeaders: ['ID', '台詞', '間'],
-    colWidths: [0, '400', 0],
+    colHeaders: ['ID', 'アクター', 'セリフ', '間'],
+    //colWidths: [0, 100, 250, 40],
     columns: [
       {data: 'id', skipColumnOnPaste: true},
+      {
+        data: 'actor',
+        type: 'dropdown',
+        source: this.provideActorSource.bind(this),
+      },
       {data: 'text'},
       {data: 'margin', type: 'numeric'},
     ],
@@ -43,7 +50,7 @@ export default class ScriptTable extends Vue {
       indicators: false,
     },
     //manualRowMove: true,
-    //width: '95vw',
+    width: '95vw',
     height: 'calc(100vh - 50px)',
     filters: true,
     allowInsertColumn: false,
@@ -80,6 +87,14 @@ export default class ScriptTable extends Vue {
 
   get visible() {
     return this.scene.nonEmpty
+  }
+
+  async created() {
+    this.actors = await this.scenarioService.loadActorMetadata()
+  }
+
+  provideActorSource(query, cb) {
+    cb(this.actors.map(a => a.name))
   }
 
   //@Emit()
