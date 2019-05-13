@@ -10,12 +10,14 @@ export class Dialogue {
       this.id = p.id
       this.text = p.text
       this.margin = p.margin
+      this.actorName = p.actorName
     }
   }
 
   id: string = uuid.v4()
   text: string = ''
   margin: number | undefined
+  actorName: string = ''
 }
 
 export class Scene {
@@ -33,7 +35,8 @@ export class Scene {
 
   constructor(p?: { dialogues: Dialogue[] }) {
     if (p) {
-      this.dialogues = p.dialogues.map(d => new Dialogue({ id: d.id, text: d.text, margin: d.margin }))
+      this.dialogues = p.dialogues.map(d =>
+        new Dialogue({ id: d.id, text: d.text, margin: d.margin, actorName: d.actorName }))
     }
   }
 

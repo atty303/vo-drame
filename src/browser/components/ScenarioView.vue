@@ -91,7 +91,8 @@ export default class ScenarioView extends Vue {
       return
     }
     this.isSyncing = true
-    await this.scenarioService.syncScene(this.selectedSequenceId, this.scene)
+    const actors = await this.scenarioService.loadActorMetadata()
+    await this.scenarioService.syncScene(this.selectedSequenceId, this.scene, actors)
     this.isSyncing = false
   }
 }

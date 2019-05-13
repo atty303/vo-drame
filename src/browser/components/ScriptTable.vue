@@ -38,7 +38,7 @@ export default class ScriptTable extends Vue {
     columns: [
       {data: 'id', skipColumnOnPaste: true},
       {
-        data: 'actor',
+        data: 'actorName',
         type: 'dropdown',
         source: this.provideActorSource.bind(this),
       },
@@ -106,6 +106,7 @@ export default class ScriptTable extends Vue {
         id: r.id,
         text: r.text,
         margin: isNaN(margin) ? undefined : margin,
+        actorName: r.actorName,
       })
     })
     const scene = new Scene({ dialogues })

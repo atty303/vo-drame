@@ -13,7 +13,7 @@ export interface ScenarioService {
   saveActorMetadata(actors: Actor[]): Promise<void>
   loadScene(sequenceId: Premiere.SequenceId): Promise<Scene | undefined>
   saveScene(sequenceId: Premiere.SequenceId, scene: Scene): Promise<void>
-  syncScene(sequenceId: Premiere.SequenceId, scene: Scene): Promise<void>
+  syncScene(sequenceId: Premiere.SequenceId, scene: Scene, actors: Actor[]): Promise<void>
   getSequences(): Promise<Premiere.Sequence[]>
 }
 
@@ -76,9 +76,12 @@ export class ScenarioServiceImpl implements ScenarioService {
     await this.api.metadata.setSceneMetadata({id: sequenceId, value: JSON.stringify(scene)})
   }
 
-  async syncScene(sequenceId: Premiere.SequenceId, scene: Scene): Promise<void> {
+  async syncScene(sequenceId: Premiere.SequenceId, scene: Scene, actors: Actor[]): Promise<void> {
     const projectId = await this.api.project.currentProjectId()
     const bundlePath = await this.ensureBundlePath()
+
+    const actorDict: {[name: string]: Actor} = {}
+    actors.forEach(a => actorDict[a.name] = a)
 
     const assets = await this.api.project.getAssetFiles({id: projectId})
 
@@ -120,6 +123,7 @@ export class ScenarioServiceImpl implements ScenarioService {
       const dialogue = syncingAssets[i]
       const filePath = path.join(bundlePath, dialogue.id + '.wav')
       const speechFile = await this.speechFileAdapter.read(filePath)
+      const actor = actorDict[dialogue.actorName]
 
       const r = {
         id: dialogue.id,
@@ -127,7 +131,7 @@ export class ScenarioServiceImpl implements ScenarioService {
         duration: speechFile.duration,
         startAt,
         subtitle: dialogue.text,
-        subtitlePath: 'モーショングラフィックステンプレートメディア/Subtitle', // FIXME: make configurable
+        subtitlePath: actor.subtitle.mediaPath,
       }
       startAt += speechFile.duration
       startAt += (dialogue.margin !== undefined) ? dialogue.margin : 1
