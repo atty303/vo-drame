@@ -21,6 +21,9 @@ export class SequenceService implements Premiere.SequenceApi {
     const videoTrack = s.videoTracks[0]
     if (!videoTrack) throw new Error(`Sequence ${params.id} hasn't video tracks`)
 
+    const portraitTrack = s.videoTracks[1]
+    if (!portraitTrack) throw new Error(`Sequence ${params.id} hasn't video tracks`)
+
     // remove all clips
     for (let i = audioTrack.clips.numItems - 1; i >= 0; i--) {
       const clip = audioTrack.clips[i]
@@ -29,6 +32,10 @@ export class SequenceService implements Premiere.SequenceApi {
 
     for (let i = videoTrack.clips.numItems - 1; i >= 0; i--) {
       const clip = videoTrack.clips[i]
+      ;(clip as any).remove(false)
+    }
+    for (let i = portraitTrack.clips.numItems - 1; i >= 0; i--) {
+      const clip = portraitTrack.clips[i]
       ;(clip as any).remove(false)
     }
 
@@ -64,6 +71,41 @@ export class SequenceService implements Premiere.SequenceApi {
       const sourceTextProp = props.getParamForDisplayName('SourceText')
       sourceTextProp.setValue(clip.subtitle)
     })
-  }
 
+    params.clips.forEach((clip, i) => {
+      //console.log('***', i, clip)
+      const portrait = util.findProjectItemByPath(app.project, clip.portraitPath) // FIXME: multiple project
+      if (!portrait) throw new Error(`Subtitle was not found: ${clip.portraitPath}`)
+
+      ;(portrait as any).setOutPoint(0.1)
+
+      clip.visemes.forEach((viseme) => {
+        const at = clip.startAt + viseme.at
+        portraitTrack.overwriteClip(portrait, at)
+        const placedClip: any = portraitTrack.clips[portraitTrack.clips.numItems - 1]
+        placedClip.name = clip.id
+        const endTime = new Time()
+        endTime.seconds =  placedClip.start.seconds + viseme.duration
+        placedClip.end = endTime
+
+        const props = placedClip.getMGTComponent().properties
+        const sourceTextProp = props.getParamForDisplayName('Mouth')
+        sourceTextProp.setValue(viseme.value)
+      })
+
+      if (i < params.clips.length - 1) {
+        const next = params.clips[i + 1]
+        portraitTrack.overwriteClip(portrait, clip.startAt + clip.duration)
+        const placedClip: any = portraitTrack.clips[portraitTrack.clips.numItems - 1]
+        placedClip.name = clip.id
+        const endTime = new Time()
+        endTime.seconds =  placedClip.start.seconds + (next.startAt - clip.startAt)
+        placedClip.end = endTime
+
+        const props = placedClip.getMGTComponent().properties
+        const sourceTextProp = props.getParamForDisplayName('Mouth')
+        sourceTextProp.setValue(0)
+      }
+    })
+  }
 }

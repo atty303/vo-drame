@@ -35,7 +35,9 @@ onLoad(false)
 
 const scenarioService = new service.ScenarioServiceImpl(
   api,
-  new service.SpeechFileAdapterImpl())
+  new service.SpeechFileAdapterImpl(),
+  new service.LipSyncService(cse.getExtensionPath().replace(/\//g, '\\') + '\\res\\ovrlipsync.exe') // FIXME: macOS
+)
 
 new Vue({
   render: (h) => h(App),

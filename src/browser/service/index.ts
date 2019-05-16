@@ -5,8 +5,10 @@ import {Scene, Actor} from '../domain'
 import {Premiere} from '../../shared'
 import {SpeechFileAdapter, SpeechFile} from './SpeechFile'
 import * as cse from '../cse'
+import {LipSyncService} from './LipSync';
 
 export * from './SpeechFile'
+export * from './LipSync'
 
 export interface ScenarioService {
   loadActorMetadata(): Promise<Actor[]>
@@ -18,9 +20,10 @@ export interface ScenarioService {
 }
 
 export class ScenarioServiceImpl implements ScenarioService {
-  constructor(api: Premiere.Api, speechFileAdapter: SpeechFileAdapter) {
+  constructor(api: Premiere.Api, speechFileAdapter: SpeechFileAdapter, lipSyncService: LipSyncService) {
     this.api = api
     this.speechFileAdapter = speechFileAdapter
+    this.lipSyncService = lipSyncService
   }
 
   async loadActorMetadata(): Promise<Actor[]> {
@@ -117,6 +120,7 @@ export class ScenarioServiceImpl implements ScenarioService {
 
     // read all speech durations
     const syncingAssets = scene.dialogues.filter(d => d.text.length > 0)
+
     let startAt = 0
     const clips: Premiere.SyncingClip[] = []
     for (let i = 0; i < syncingAssets.length; ++i) {
@@ -125,6 +129,8 @@ export class ScenarioServiceImpl implements ScenarioService {
       const speechFile = await this.speechFileAdapter.read(filePath)
       const actor = actorDict[dialogue.actorName]
 
+      const visemes = await this.lipSyncService.process(filePath)
+
       const r = {
         id: dialogue.id,
         path: speechFile.path,
@@ -132,6 +138,8 @@ export class ScenarioServiceImpl implements ScenarioService {
         startAt,
         subtitle: dialogue.text,
         subtitlePath: actor.subtitle.mediaPath,
+        visemes,
+        portraitPath: actor.portrait.mediaPath,
       }
       startAt += speechFile.duration
       startAt += (dialogue.margin !== undefined) ? dialogue.margin : 1
@@ -159,4 +167,5 @@ export class ScenarioServiceImpl implements ScenarioService {
 
   private api: Premiere.Api
   private speechFileAdapter: SpeechFileAdapter
+  private lipSyncService: LipSyncService
 }

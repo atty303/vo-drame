@@ -6,7 +6,7 @@
         {
             "label": "Start a development session",
             "type": "npm",
-            "script": "develop",
+            "script": "serve",
             "problemMatcher": [
                 "$tsc-watch"
             ],

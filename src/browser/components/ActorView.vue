@@ -39,13 +39,12 @@
                   <div class="col-2">
                     <q-input v-model="selectedActor.subtitle.track" label="トラック" placeholder="1" dense dark standout></q-input>
                   </div>
-                  <div class="col-8">
+                  <div class="col-9">
                     <q-input label="モーショングラフィックス"
                       v-model="selectedActor.subtitle.mediaPath"
                       placeholder="モーショングラフィックステンプレートメディア/字幕"
                       dense dark standout bottom-slots>
                       <template v-slot:hint>
-                        <code>
                       </template>
                     </q-input>
                   </div>
@@ -54,12 +53,21 @@
             </q-card>
           </q-expansion-item>
 
-          <q-expansion-item label="立ち絵" icon="person" default-opened dense header-style="border-bottom: 1px solid grey">
+          <q-expansion-item label="ポートレート" icon="person" default-opened dense header-style="border-bottom: 1px solid grey">
             <q-card class="bg-secondary">
               <q-card-section>
                 <div class="row q-gutter-sm">
                   <div class="col-2">
-                    <q-input value="2" label="トラック" placeholder="1" dense dark standout></q-input>
+                    <q-input v-model="selectedActor.portrait.track" label="トラック" placeholder="1" dense dark standout></q-input>
+                  </div>
+                  <div class="col-9">
+                    <q-input label="モーショングラフィックス"
+                      v-model="selectedActor.portrait.mediaPath"
+                      placeholder="モーショングラフィックステンプレートメディア/立ち絵"
+                      dense dark standout bottom-slots>
+                      <template v-slot:hint>
+                      </template>
+                    </q-input>
                   </div>
                 </div>
               </q-card-section>

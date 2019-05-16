@@ -59,6 +59,12 @@ export namespace Premiere {
     startAt: number
     subtitle: string
     subtitlePath: MediaPath
+    portraitPath: MediaPath
+    visemes: Array<{
+      at: number
+      value: number
+      duration: number
+    }>
   }
 
   export interface SequenceApi {

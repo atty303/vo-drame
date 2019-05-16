@@ -56,6 +56,11 @@ interface ActorSubtitle {
   mediaPath: string
 }
 
+interface ActorPortrait {
+  track: number
+  mediaPath: string
+}
+
 export type ActorId = string
 
 export class Actor {
@@ -64,6 +69,10 @@ export class Actor {
   subtitle: ActorSubtitle = {
     track: 1,
     mediaPath: 'モーショングラフィックステンプレートメディア/字幕',
+  }
+  portrait: ActorPortrait = {
+    track: 2,
+    mediaPath: 'モーショングラフィックステンプレートメディア/立ち絵',
   }
 }
 
